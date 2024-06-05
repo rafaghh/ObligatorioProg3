@@ -4,6 +4,10 @@ namespace ObligatorioProg3.Models
 {
     public abstract class Persona
     {
+
+        [Key]
+        public int Id { get; set; }
+
         [Required]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "El nombre debe tener entre 2 y 100 caracteres.")]
         public string Nombre { get; set; }

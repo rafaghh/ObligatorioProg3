@@ -13,13 +13,6 @@ namespace ObligatorioProg3.Models
 
         [StringLength(500, ErrorMessage = "La descripción no puede tener más de 500 caracteres.")]
         public string Descripcion { get; set; }
-
-        public TipoMaquina(int idTipoMaq, string maquinaNombre, string descripcion)
-        {
-            IdTipoMaq = idTipoMaq;
-            MaquinaNombre = maquinaNombre;
-            Descripcion = descripcion;
-        }
     }
 }
 

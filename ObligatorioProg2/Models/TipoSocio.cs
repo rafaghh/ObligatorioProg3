@@ -13,13 +13,6 @@ namespace ObligatorioProg3.Models
 
         [StringLength(500, ErrorMessage = "Los beneficios no pueden tener más de 500 caracteres.")]
         public string Beneficios { get; set; }
-
-        public TipoSocio(int idTipoSocio, string tipoNombre, string beneficios)
-        {
-            IdTipoSocio = idTipoSocio;
-            TipoNombre = tipoNombre;
-            Beneficios = beneficios;
-        }
     }
 }
 

@@ -11,7 +11,6 @@ namespace ObligatorioProg3.Datos
 
         }
 
-        public DbSet<Persona> Persona { get; set; }
         public DbSet<Responsable> Responsable { get; set; }
         public DbSet<Socio> Socio { get; set; }
 

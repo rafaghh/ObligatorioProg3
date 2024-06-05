@@ -31,23 +31,5 @@ namespace ObligatorioProg3.Models
         public List<Maquina> Maquinas { get; set; }
 
         public List<Socio> Socios { get; set; }
-
-        public Local()
-        {
-            Maquinas = new List<Maquina>();
-            Socios = new List<Socio>();
-        }
-
-        public Local(int idLocal, string nombre, string ciudad, string direccion, string telefono, Responsable responsable, List<Maquina> maquinas, List<Socio> socios)
-        {
-            IdLocal = idLocal;
-            Nombre = nombre;
-            Ciudad = ciudad;
-            Direccion = direccion;
-            Telefono = telefono;
-            Responsable = responsable;
-            Maquinas = maquinas ?? new List<Maquina>();
-            Socios = socios ?? new List<Socio>();
-        }
     }
 }
