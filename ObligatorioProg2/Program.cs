@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ObligatorioProg2.Datos;
+using ObligatorioProg3.Datos;
 
 var builder = WebApplication.CreateBuilder(args);
 

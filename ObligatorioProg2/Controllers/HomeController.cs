@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using ObligatorioProg2.Models;
+using ObligatorioProg3.Models;
 using System.Diagnostics;
 
-namespace ObligatorioProg2.Controllers
+namespace ObligatorioProg3.Controllers
 {
     public class HomeController : Controller
     {
