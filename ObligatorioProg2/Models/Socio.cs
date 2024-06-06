@@ -11,15 +11,6 @@ namespace ObligatorioProg3.Models
 
         [Required]
         public Local Local { get; set; }
-
-        [NotMapped]
-        public string Nombre { get; set; } 
-
-        [NotMapped]
-        public string Telefono { get; set; } 
-
-        [NotMapped]
-        public string Email { get; set; } 
     }
 }
 

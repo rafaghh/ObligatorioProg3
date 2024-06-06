@@ -29,19 +29,5 @@ namespace ObligatorioProg3.Models
         [Required]
         public bool Disponible { get; set; }
 
-        public Maquina()
-        {
-        }
-
-        public Maquina(int idMaquina, Local local, DateTime fechaCompra, int precioCompra, int vidaUtil, TipoMaquina tipo, bool disponible)
-        {
-            IdMaquina = idMaquina;
-            Local = local;
-            FechaCompra = fechaCompra;
-            PrecioCompra = precioCompra;
-            VidaUtil = vidaUtil;
-            Tipo = tipo;
-            Disponible = disponible;
-        }
     }
 }

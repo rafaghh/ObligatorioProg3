@@ -13,6 +13,7 @@ namespace ObligatorioProg3.Datos
 
         public DbSet<Responsable> Responsable { get; set; }
         public DbSet<Socio> Socio { get; set; }
+        public DbSet<ObligatorioProg3.Models.TipoMaquina> TipoMaquina { get; set; } = default!;
 
     }
 }

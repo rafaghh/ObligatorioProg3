@@ -10,22 +10,22 @@ using ObligatorioProg3.Models;
 
 namespace ObligatorioProg3.Controllers
 {
-    public class SociosController : Controller
+    public class TipoMaquinasController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SociosController(ApplicationDbContext context)
+        public TipoMaquinasController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Socios
+        // GET: TipoMaquinas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Socio.ToListAsync());
+            return View(await _context.TipoMaquina.ToListAsync());
         }
 
-        // GET: Socios/Details/5
+        // GET: TipoMaquinas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            var tipoMaquina = await _context.TipoMaquina
+                .FirstOrDefaultAsync(m => m.IdTipoMaq == id);
+            if (tipoMaquina == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(tipoMaquina);
         }
 
-        // GET: Socios/Create
+        // GET: TipoMaquinas/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Socios/Create
+        // POST: TipoMaquinas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Create([Bind("IdTipoMaq,MaquinaNombre,Descripcion")] TipoMaquina tipoMaquina)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(socio);
+                _context.Add(tipoMaquina);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(socio);
+            return View(tipoMaquina);
         }
 
-        // GET: Socios/Edit/5
+        // GET: TipoMaquinas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio.FindAsync(id);
-            if (socio == null)
+            var tipoMaquina = await _context.TipoMaquina.FindAsync(id);
+            if (tipoMaquina == null)
             {
                 return NotFound();
             }
-            return View(socio);
+            return View(tipoMaquina);
         }
 
-        // POST: Socios/Edit/5
+        // POST: TipoMaquinas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("IdTipoMaq,MaquinaNombre,Descripcion")] TipoMaquina tipoMaquina)
         {
-            if (id != socio.Id)
+            if (id != tipoMaquina.IdTipoMaq)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace ObligatorioProg3.Controllers
             {
                 try
                 {
-                    _context.Update(socio);
+                    _context.Update(tipoMaquina);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SocioExists(socio.Id))
+                    if (!TipoMaquinaExists(tipoMaquina.IdTipoMaq))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace ObligatorioProg3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(socio);
+            return View(tipoMaquina);
         }
 
-        // GET: Socios/Delete/5
+        // GET: TipoMaquinas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +124,34 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            var tipoMaquina = await _context.TipoMaquina
+                .FirstOrDefaultAsync(m => m.IdTipoMaq == id);
+            if (tipoMaquina == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(tipoMaquina);
         }
 
-        // POST: Socios/Delete/5
+        // POST: TipoMaquinas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var socio = await _context.Socio.FindAsync(id);
-            if (socio != null)
+            var tipoMaquina = await _context.TipoMaquina.FindAsync(id);
+            if (tipoMaquina != null)
             {
-                _context.Socio.Remove(socio);
+                _context.TipoMaquina.Remove(tipoMaquina);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SocioExists(int id)
+        private bool TipoMaquinaExists(int id)
         {
-            return _context.Socio.Any(e => e.Id == id);
+            return _context.TipoMaquina.Any(e => e.IdTipoMaq == id);
         }
     }
 }
