@@ -10,22 +10,22 @@ using ObligatorioProg3.Models;
 
 namespace ObligatorioProg3.Controllers
 {
-    public class SociosController : Controller
+    public class MaquinasController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SociosController(ApplicationDbContext context)
+        public MaquinasController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Socios
+        // GET: Maquinas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Socio.ToListAsync());
+            return View(await _context.Maquina.ToListAsync());
         }
 
-        // GET: Socios/Details/5
+        // GET: Maquinas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,41 +33,41 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            var maquina = await _context.Maquina
+                .FirstOrDefaultAsync(m => m.IdMaquina == id);
+            if (maquina == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(maquina);
         }
 
-        // GET: Socios/Create
+        // GET: Maquinas/Create
         public IActionResult Create()
         {
-            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre");
+            ViewData["TipoMaquina"] = new SelectList(_context.TipoMaquina, "IdTipoMaq", "MaquinaNombre");
             return View();
         }
 
-        // POST: Socios/Create
+        // POST: Maquinas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Telefono,Email,TipoId")] Socio socio)
+        public async Task<IActionResult> Create([Bind("IdMaquina,FechaCompra,PrecioCompra,VidaUtil,Disponible,TipoMId")] Maquina maquina)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(socio);
+                _context.Add(maquina);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre");
-            return View(socio);
+            ViewData["TipoMaquina"] = new SelectList(_context.TipoMaquina, "IdTipoMaq", "MaquinaNombre", maquina.TipoMaquina.IdTipoMaq);
+            return View(maquina);
         }
 
-        // GET: Socios/Edit/5
+        // GET: Maquinas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +75,22 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio.FindAsync(id);
-            if (socio == null)
+            var maquina = await _context.Maquina.FindAsync(id);
+            if (maquina == null)
             {
                 return NotFound();
             }
-            return View(socio);
+            return View(maquina);
         }
 
-        // POST: Socios/Edit/5
+        // POST: Maquinas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("IdMaquina,FechaCompra,PrecioCompra,VidaUtil,Disponible")] Maquina maquina)
         {
-            if (id != socio.Id)
+            if (id != maquina.IdMaquina)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace ObligatorioProg3.Controllers
             {
                 try
                 {
-                    _context.Update(socio);
+                    _context.Update(maquina);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SocioExists(socio.Id))
+                    if (!MaquinaExists(maquina.IdMaquina))
                     {
                         return NotFound();
                     }
@@ -115,10 +115,10 @@ namespace ObligatorioProg3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(socio);
+            return View(maquina);
         }
 
-        // GET: Socios/Delete/5
+        // GET: Maquinas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +126,34 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            var maquina = await _context.Maquina
+                .FirstOrDefaultAsync(m => m.IdMaquina == id);
+            if (maquina == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(maquina);
         }
 
-        // POST: Socios/Delete/5
+        // POST: Maquinas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var socio = await _context.Socio.FindAsync(id);
-            if (socio != null)
+            var maquina = await _context.Maquina.FindAsync(id);
+            if (maquina != null)
             {
-                _context.Socio.Remove(socio);
+                _context.Maquina.Remove(maquina);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SocioExists(int id)
+        private bool MaquinaExists(int id)
         {
-            return _context.Socio.Any(e => e.Id == id);
+            return _context.Maquina.Any(e => e.IdMaquina == id);
         }
     }
 }

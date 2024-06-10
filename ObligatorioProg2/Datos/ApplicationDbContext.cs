@@ -6,14 +6,15 @@ namespace ObligatorioProg3.Datos
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opciones) : base (opciones)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opciones) : base(opciones)
         {
 
         }
 
-        public DbSet<Responsable> Responsable { get; set; }
+        public DbSet<Local> Local { get; set; }
         public DbSet<Socio> Socio { get; set; }
-        public DbSet<ObligatorioProg3.Models.TipoMaquina> TipoMaquina { get; set; } = default!;
-
+        public DbSet<TipoSocio> TipoSocio { get; set; }
+        public DbSet<TipoMaquina> TipoMaquina { get; set; }
+        public DbSet<Maquina> Maquina { get; set; }
     }
 }

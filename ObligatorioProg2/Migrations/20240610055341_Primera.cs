@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ObligatorioProg3.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeraMigracion : Migration
+    public partial class Primera : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -87,7 +87,8 @@ namespace ObligatorioProg3.Migrations
                     FechaCompra = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PrecioCompra = table.Column<int>(type: "int", nullable: false),
                     VidaUtil = table.Column<int>(type: "int", nullable: false),
-                    TipoIdTipoMaq = table.Column<int>(type: "int", nullable: false),
+                    TipoMId = table.Column<int>(type: "int", nullable: false),
+                    TipoMaquinaIdTipoMaq = table.Column<int>(type: "int", nullable: true),
                     Disponible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -100,11 +101,10 @@ namespace ObligatorioProg3.Migrations
                         principalColumn: "IdLocal",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Maquina_TipoMaquina_TipoIdTipoMaq",
-                        column: x => x.TipoIdTipoMaq,
+                        name: "FK_Maquina_TipoMaquina_TipoMaquinaIdTipoMaq",
+                        column: x => x.TipoMaquinaIdTipoMaq,
                         principalTable: "TipoMaquina",
-                        principalColumn: "IdTipoMaq",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdTipoMaq");
                 });
 
             migrationBuilder.CreateTable(
@@ -113,21 +113,24 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TipoIdTipoSocio = table.Column<int>(type: "int", nullable: false),
-                    LocalIdLocal = table.Column<int>(type: "int", nullable: false)
+                    TipoId = table.Column<int>(type: "int", nullable: false),
+                    LocalId = table.Column<int>(type: "int", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Socio", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Socio_Local_LocalIdLocal",
-                        column: x => x.LocalIdLocal,
+                        name: "FK_Socio_Local_LocalId",
+                        column: x => x.LocalId,
                         principalTable: "Local",
                         principalColumn: "IdLocal",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Socio_TipoSocio_TipoIdTipoSocio",
-                        column: x => x.TipoIdTipoSocio,
+                        name: "FK_Socio_TipoSocio_TipoId",
+                        column: x => x.TipoId,
                         principalTable: "TipoSocio",
                         principalColumn: "IdTipoSocio",
                         onDelete: ReferentialAction.Cascade);
@@ -144,19 +147,19 @@ namespace ObligatorioProg3.Migrations
                 column: "LocalIdLocal");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Maquina_TipoIdTipoMaq",
+                name: "IX_Maquina_TipoMaquinaIdTipoMaq",
                 table: "Maquina",
-                column: "TipoIdTipoMaq");
+                column: "TipoMaquinaIdTipoMaq");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Socio_LocalIdLocal",
+                name: "IX_Socio_LocalId",
                 table: "Socio",
-                column: "LocalIdLocal");
+                column: "LocalId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Socio_TipoIdTipoSocio",
+                name: "IX_Socio_TipoId",
                 table: "Socio",
-                column: "TipoIdTipoSocio");
+                column: "TipoId");
         }
 
         /// <inheritdoc />

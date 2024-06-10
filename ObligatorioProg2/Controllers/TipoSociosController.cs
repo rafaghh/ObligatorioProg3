@@ -10,22 +10,22 @@ using ObligatorioProg3.Models;
 
 namespace ObligatorioProg3.Controllers
 {
-    public class SociosController : Controller
+    public class TipoSociosController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SociosController(ApplicationDbContext context)
+        public TipoSociosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Socios
+        // GET: TipoSocios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Socio.ToListAsync());
+            return View(await _context.TipoSocio.ToListAsync());
         }
 
-        // GET: Socios/Details/5
+        // GET: TipoSocios/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,41 +33,39 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            var tipoSocio = await _context.TipoSocio
+                .FirstOrDefaultAsync(m => m.IdTipoSocio == id);
+            if (tipoSocio == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(tipoSocio);
         }
 
-        // GET: Socios/Create
+        // GET: TipoSocios/Create
         public IActionResult Create()
         {
-            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre");
             return View();
         }
 
-        // POST: Socios/Create
+        // POST: TipoSocios/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Telefono,Email,TipoId")] Socio socio)
+        public async Task<IActionResult> Create([Bind("IdTipoSocio,TipoNombre,Beneficios")] TipoSocio tipoSocio)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(socio);
+                _context.Add(tipoSocio);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre");
-            return View(socio);
+            return View(tipoSocio);
         }
 
-        // GET: Socios/Edit/5
+        // GET: TipoSocios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +73,22 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio.FindAsync(id);
-            if (socio == null)
+            var tipoSocio = await _context.TipoSocio.FindAsync(id);
+            if (tipoSocio == null)
             {
                 return NotFound();
             }
-            return View(socio);
+            return View(tipoSocio);
         }
 
-        // POST: Socios/Edit/5
+        // POST: TipoSocios/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("IdTipoSocio,TipoNombre,Beneficios")] TipoSocio tipoSocio)
         {
-            if (id != socio.Id)
+            if (id != tipoSocio.IdTipoSocio)
             {
                 return NotFound();
             }
@@ -99,12 +97,12 @@ namespace ObligatorioProg3.Controllers
             {
                 try
                 {
-                    _context.Update(socio);
+                    _context.Update(tipoSocio);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SocioExists(socio.Id))
+                    if (!TipoSocioExists(tipoSocio.IdTipoSocio))
                     {
                         return NotFound();
                     }
@@ -115,10 +113,10 @@ namespace ObligatorioProg3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(socio);
+            return View(tipoSocio);
         }
 
-        // GET: Socios/Delete/5
+        // GET: TipoSocios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +124,34 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socio
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            var tipoSocio = await _context.TipoSocio
+                .FirstOrDefaultAsync(m => m.IdTipoSocio == id);
+            if (tipoSocio == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(tipoSocio);
         }
 
-        // POST: Socios/Delete/5
+        // POST: TipoSocios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var socio = await _context.Socio.FindAsync(id);
-            if (socio != null)
+            var tipoSocio = await _context.TipoSocio.FindAsync(id);
+            if (tipoSocio != null)
             {
-                _context.Socio.Remove(socio);
+                _context.TipoSocio.Remove(tipoSocio);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SocioExists(int id)
+        private bool TipoSocioExists(int id)
         {
-            return _context.Socio.Any(e => e.Id == id);
+            return _context.TipoSocio.Any(e => e.IdTipoSocio == id);
         }
     }
 }

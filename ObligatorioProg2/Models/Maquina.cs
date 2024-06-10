@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ObligatorioProg3.Models
 {
@@ -23,9 +24,15 @@ namespace ObligatorioProg3.Models
         [Range(1, int.MaxValue, ErrorMessage = "La vida útil debe ser mayor que 0.")]
         public int VidaUtil { get; set; }
 
-        [Required]
-        public TipoMaquina Tipo { get; set; }
+        [Display(Name = "Tipo Maquina")]
+        [Required(ErrorMessage = "El tipo de maquina es requerido")]
+        [ForeignKey("TiposM")]
+        public int TipoMId { get; set; }
+        public TipoMaquina? TipoMaquina { get; set; }
 
+        
+        
+        
         [Required]
         public bool Disponible { get; set; }
 

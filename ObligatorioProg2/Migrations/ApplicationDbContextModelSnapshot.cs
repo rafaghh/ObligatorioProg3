@@ -80,7 +80,10 @@ namespace ObligatorioProg3.Migrations
                     b.Property<int>("PrecioCompra")
                         .HasColumnType("int");
 
-                    b.Property<int>("TipoIdTipoMaq")
+                    b.Property<int>("TipoMId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TipoMaquinaIdTipoMaq")
                         .HasColumnType("int");
 
                     b.Property<int>("VidaUtil")
@@ -90,7 +93,7 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasIndex("LocalIdLocal");
 
-                    b.HasIndex("TipoIdTipoMaq");
+                    b.HasIndex("TipoMaquinaIdTipoMaq");
 
                     b.ToTable("Maquina");
                 });
@@ -136,7 +139,7 @@ namespace ObligatorioProg3.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("LocalIdLocal")
+                    b.Property<int>("LocalId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
@@ -149,14 +152,14 @@ namespace ObligatorioProg3.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("TipoIdTipoSocio")
+                    b.Property<int>("TipoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocalIdLocal");
+                    b.HasIndex("LocalId");
 
-                    b.HasIndex("TipoIdTipoSocio");
+                    b.HasIndex("TipoId");
 
                     b.ToTable("Socio");
                 });
@@ -226,28 +229,26 @@ namespace ObligatorioProg3.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ObligatorioProg3.Models.TipoMaquina", "Tipo")
+                    b.HasOne("ObligatorioProg3.Models.TipoMaquina", "TipoMaquina")
                         .WithMany()
-                        .HasForeignKey("TipoIdTipoMaq")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TipoMaquinaIdTipoMaq");
 
                     b.Navigation("Local");
 
-                    b.Navigation("Tipo");
+                    b.Navigation("TipoMaquina");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
                 {
                     b.HasOne("ObligatorioProg3.Models.Local", "Local")
                         .WithMany("Socios")
-                        .HasForeignKey("LocalIdLocal")
+                        .HasForeignKey("LocalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ObligatorioProg3.Models.TipoSocio", "Tipo")
                         .WithMany()
-                        .HasForeignKey("TipoIdTipoSocio")
+                        .HasForeignKey("TipoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
