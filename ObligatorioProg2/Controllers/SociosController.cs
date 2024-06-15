@@ -22,7 +22,8 @@ namespace ObligatorioProg3.Controllers
         // GET: Socios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Socio.ToListAsync());
+            var applicationDbContext = _context.Socio.Include(s => s.Local).Include(s => s.Tipo);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Socios/Details/5
@@ -34,6 +35,8 @@ namespace ObligatorioProg3.Controllers
             }
 
             var socio = await _context.Socio
+                .Include(s => s.Local)
+                .Include(s => s.Tipo)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {
@@ -46,6 +49,7 @@ namespace ObligatorioProg3.Controllers
         // GET: Socios/Create
         public IActionResult Create()
         {
+            ViewData["LocalId"] = new SelectList(_context.Local, "IdLocal", "Nombre");
             ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre");
             return View();
         }
@@ -55,7 +59,7 @@ namespace ObligatorioProg3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Telefono,Email,TipoId")] Socio socio)
+        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
         {
             if (ModelState.IsValid)
             {
@@ -63,7 +67,8 @@ namespace ObligatorioProg3.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre");
+            ViewData["LocalId"] = new SelectList(_context.Local, "IdLocal", "Nombre", socio.LocalId);
+            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre", socio.TipoId);
             return View(socio);
         }
 
@@ -80,6 +85,8 @@ namespace ObligatorioProg3.Controllers
             {
                 return NotFound();
             }
+            ViewData["LocalId"] = new SelectList(_context.Local, "IdLocal", "Nombre", socio.LocalId);
+            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre", socio.TipoId);
             return View(socio);
         }
 
@@ -88,7 +95,7 @@ namespace ObligatorioProg3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
         {
             if (id != socio.Id)
             {
@@ -115,6 +122,8 @@ namespace ObligatorioProg3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["LocalId"] = new SelectList(_context.Local, "IdLocal", "Nombre", socio.LocalId);
+            ViewData["TipoId"] = new SelectList(_context.TipoSocio, "IdTipoSocio", "TipoNombre", socio.TipoId);
             return View(socio);
         }
 
@@ -127,6 +136,8 @@ namespace ObligatorioProg3.Controllers
             }
 
             var socio = await _context.Socio
+                .Include(s => s.Local)
+                .Include(s => s.Tipo)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {

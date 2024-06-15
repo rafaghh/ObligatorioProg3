@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ObligatorioProg3.Datos;
 
@@ -11,9 +12,11 @@ using ObligatorioProg3.Datos;
 namespace ObligatorioProg3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240615031357_holad")]
+    partial class holad
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,7 +137,7 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LocalId")
+                    b.Property<int>("LocalId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
@@ -229,7 +232,9 @@ namespace ObligatorioProg3.Migrations
                 {
                     b.HasOne("ObligatorioProg3.Models.Local", "Local")
                         .WithMany("Socios")
-                        .HasForeignKey("LocalId");
+                        .HasForeignKey("LocalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ObligatorioProg3.Models.TipoSocio", "Tipo")
                         .WithMany()

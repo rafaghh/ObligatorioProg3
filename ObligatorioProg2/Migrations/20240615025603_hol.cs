@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ObligatorioProg3.Migrations
 {
     /// <inheritdoc />
-    public partial class Primera : Migration
+    public partial class hol : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,9 +17,9 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,8 +32,8 @@ namespace ObligatorioProg3.Migrations
                 {
                     IdTipoMaq = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MaquinaNombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    MaquinaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,8 +46,8 @@ namespace ObligatorioProg3.Migrations
                 {
                     IdTipoSocio = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TipoNombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Beneficios = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    TipoNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Beneficios = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,10 +60,10 @@ namespace ObligatorioProg3.Migrations
                 {
                     IdLocal = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Ciudad = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ciudad = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ResponsableId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -115,9 +115,9 @@ namespace ObligatorioProg3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TipoId = table.Column<int>(type: "int", nullable: false),
                     LocalId = table.Column<int>(type: "int", nullable: false),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
