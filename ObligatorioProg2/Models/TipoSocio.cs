@@ -10,6 +10,8 @@ namespace ObligatorioProg3.Models
         [Required]
         public string TipoNombre { get; set; }
         public string Beneficios { get; set; }
+
+        public ICollection<Socio> Socios { get; set; }
     }
 }
 

@@ -38,9 +38,6 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdResponsable")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -56,7 +53,7 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasIndex("ResponsableId");
 
-                    b.ToTable("Local");
+                    b.ToTable("Locales");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Maquina", b =>
@@ -79,10 +76,7 @@ namespace ObligatorioProg3.Migrations
                     b.Property<int>("PrecioCompra")
                         .HasColumnType("int");
 
-                    b.Property<int>("TipoMId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TipoMaquinaId")
+                    b.Property<int>("TipoMaquinaId")
                         .HasColumnType("int");
 
                     b.Property<int>("VidaUtil")
@@ -94,7 +88,7 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasIndex("TipoMaquinaId");
 
-                    b.ToTable("Maquina");
+                    b.ToTable("Maquinas");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
@@ -119,7 +113,7 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Responsable");
+                    b.ToTable("Responsables");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
@@ -137,17 +131,14 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TipoRutinaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("idTipoRutina")
+                    b.Property<int>("TipoRutinaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TipoRutinaId");
 
-                    b.ToTable("Rutina");
+                    b.ToTable("Rutinas");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
@@ -182,7 +173,7 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasIndex("TipoId");
 
-                    b.ToTable("Socio");
+                    b.ToTable("Socios");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.TipoMaquina", b =>
@@ -203,7 +194,7 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoMaquina");
+                    b.ToTable("TiposMaquina");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.TipoRutina", b =>
@@ -214,9 +205,13 @@ namespace ObligatorioProg3.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("TipoRutina");
+                    b.ToTable("TiposRutina");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.TipoSocio", b =>
@@ -243,7 +238,7 @@ namespace ObligatorioProg3.Migrations
             modelBuilder.Entity("ObligatorioProg3.Models.Local", b =>
                 {
                     b.HasOne("ObligatorioProg3.Models.Responsable", "Responsable")
-                        .WithMany()
+                        .WithMany("Locales")
                         .HasForeignKey("ResponsableId");
 
                     b.Navigation("Responsable");
@@ -258,8 +253,10 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired();
 
                     b.HasOne("ObligatorioProg3.Models.TipoMaquina", "TipoMaquina")
-                        .WithMany()
-                        .HasForeignKey("TipoMaquinaId");
+                        .WithMany("Maquinas")
+                        .HasForeignKey("TipoMaquinaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Local");
 
@@ -269,8 +266,10 @@ namespace ObligatorioProg3.Migrations
             modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
                 {
                     b.HasOne("ObligatorioProg3.Models.TipoRutina", "TipoRutina")
-                        .WithMany()
-                        .HasForeignKey("TipoRutinaId");
+                        .WithMany("Rutinas")
+                        .HasForeignKey("TipoRutinaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("TipoRutina");
                 });
@@ -283,21 +282,41 @@ namespace ObligatorioProg3.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ObligatorioProg3.Models.TipoSocio", "Tipo")
-                        .WithMany()
+                    b.HasOne("ObligatorioProg3.Models.TipoSocio", "TipoSocio")
+                        .WithMany("Socios")
                         .HasForeignKey("TipoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Local");
 
-                    b.Navigation("Tipo");
+                    b.Navigation("TipoSocio");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Local", b =>
                 {
                     b.Navigation("Maquinas");
 
+                    b.Navigation("Socios");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
+                {
+                    b.Navigation("Locales");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.TipoMaquina", b =>
+                {
+                    b.Navigation("Maquinas");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.TipoRutina", b =>
+                {
+                    b.Navigation("Rutinas");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.TipoSocio", b =>
+                {
                     b.Navigation("Socios");
                 });
 #pragma warning restore 612, 618

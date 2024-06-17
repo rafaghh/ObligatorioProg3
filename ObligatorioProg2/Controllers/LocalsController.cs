@@ -10,23 +10,23 @@ using ObligatorioProg3.Models;
 
 namespace ObligatorioProg3.Controllers
 {
-    public class SociosController : Controller
+    public class LocalsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SociosController(ApplicationDbContext context)
+        public LocalsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Socios
+        // GET: Locals
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Socios.Include(s => s.Local).Include(s => s.TipoSocio);
+            var applicationDbContext = _context.Locales.Include(l => l.Responsable);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Socios/Details/5
+        // GET: Locals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,45 +34,42 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios
-                .Include(s => s.Local)
-                .Include(s => s.TipoSocio)
+            var local = await _context.Locales
+                .Include(l => l.Responsable)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            if (local == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(local);
         }
 
-        // GET: Socios/Create
+        // GET: Locals/Create
         public IActionResult Create()
         {
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre");
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre");
+            ViewData["ResponsableId"] = new SelectList(_context.Responsables, "Id", "Nombre");
             return View();
         }
 
-        // POST: Socios/Create
+        // POST: Locals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,Ciudad,Direccion,Telefono,ResponsableId")] Local local)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(socio);
+                _context.Add(local);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
-            return View(socio);
+            ViewData["ResponsableId"] = new SelectList(_context.Responsables, "Id", "Nombre", local.ResponsableId);
+            return View(local);
         }
 
-        // GET: Socios/Edit/5
+        // GET: Locals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,24 +77,23 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios.FindAsync(id);
-            if (socio == null)
+            var local = await _context.Locales.FindAsync(id);
+            if (local == null)
             {
                 return NotFound();
             }
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
-            return View(socio);
+            ViewData["ResponsableId"] = new SelectList(_context.Responsables, "Id", "Nombre", local.ResponsableId);
+            return View(local);
         }
 
-        // POST: Socios/Edit/5
+        // POST: Locals/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Ciudad,Direccion,Telefono,ResponsableId")] Local local)
         {
-            if (id != socio.Id)
+            if (id != local.Id)
             {
                 return NotFound();
             }
@@ -106,12 +102,12 @@ namespace ObligatorioProg3.Controllers
             {
                 try
                 {
-                    _context.Update(socio);
+                    _context.Update(local);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SocioExists(socio.Id))
+                    if (!LocalExists(local.Id))
                     {
                         return NotFound();
                     }
@@ -122,12 +118,11 @@ namespace ObligatorioProg3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
-            return View(socio);
+            ViewData["ResponsableId"] = new SelectList(_context.Responsables, "Id", "Nombre", local.ResponsableId);
+            return View(local);
         }
 
-        // GET: Socios/Delete/5
+        // GET: Locals/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,36 +130,35 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios
-                .Include(s => s.Local)
-                .Include(s => s.TipoSocio)
+            var local = await _context.Locales
+                .Include(l => l.Responsable)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            if (local == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(local);
         }
 
-        // POST: Socios/Delete/5
+        // POST: Locals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var socio = await _context.Socios.FindAsync(id);
-            if (socio != null)
+            var local = await _context.Locales.FindAsync(id);
+            if (local != null)
             {
-                _context.Socios.Remove(socio);
+                _context.Locales.Remove(local);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SocioExists(int id)
+        private bool LocalExists(int id)
         {
-            return _context.Socios.Any(e => e.Id == id);
+            return _context.Locales.Any(e => e.Id == id);
         }
     }
 }

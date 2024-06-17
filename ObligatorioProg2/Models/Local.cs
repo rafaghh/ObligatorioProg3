@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ObligatorioProg3.Models
 {
@@ -14,10 +15,14 @@ namespace ObligatorioProg3.Models
         public string Direccion { get; set; }
         public string Telefono { get; set; }
 
-        public int IdResponsable { get; set; }
+
+        [Display(Name = "Responsable")]
+        [ForeignKey("Responsables")]
+        public int? ResponsableId { get; set; }
         public Responsable? Responsable { get; set; }
 
-        public List<Maquina> Maquinas { get; set; }
-        public List<Socio>? Socios { get; set; }
+
+        public List<Maquina> Maquinas { get; set; } = new List<Maquina>();
+        public List<Socio> Socios { get; set; } = new List<Socio>();
     }
 }

@@ -10,6 +10,8 @@ namespace ObligatorioProg3.Models
         [Required]
         public string MaquinaNombre { get; set; }
         public string Descripcion { get; set; }
+
+        public ICollection<Maquina> Maquinas { get; set; }
     }
 }
 

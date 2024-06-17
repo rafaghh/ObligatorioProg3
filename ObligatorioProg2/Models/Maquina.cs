@@ -9,14 +9,15 @@ namespace ObligatorioProg3.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        public int LocalId { get; set; }
         public Local Local { get; set; }
+
         public DateTime FechaCompra { get; set; }
         public int PrecioCompra { get; set; }
         public int VidaUtil { get; set; }
-        public int TipoMId { get; set; }
-        public TipoMaquina? TipoMaquina { get; set; }
-        public bool Disponible { get; set; }
+        public int TipoMaquinaId { get; set; }
+        public TipoMaquina TipoMaquina { get; set; }
 
+        public bool Disponible { get; set; }
     }
 }

@@ -10,6 +10,6 @@
 
         public TipoRutina? TipoRutina { get; set; }
 
-        public int idTipoRutina { get; set; }
+        public int TipoRutinaId { get; set; }
     }
 }
