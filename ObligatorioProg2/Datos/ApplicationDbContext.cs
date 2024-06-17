@@ -16,5 +16,9 @@ namespace ObligatorioProg3.Datos
         public DbSet<TipoSocio> TipoSocio { get; set; }
         public DbSet<TipoMaquina> TipoMaquina { get; set; }
         public DbSet<Maquina> Maquina { get; set; }
+        public DbSet<Rutina> Rutina { get; set; }
+        public DbSet<TipoRutina> TipoRutina { get; set; }
+
+
     }
 }
