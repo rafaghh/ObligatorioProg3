@@ -12,8 +12,8 @@ using ObligatorioProg3.Datos;
 namespace ObligatorioProg3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240617005337_hola")]
-    partial class hola
+    [Migration("20240617013916_PrimeraMigracion")]
+    partial class PrimeraMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,11 @@ namespace ObligatorioProg3.Migrations
 
             modelBuilder.Entity("ObligatorioProg3.Models.Local", b =>
                 {
-                    b.Property<int>("IdLocal")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdLocal"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Ciudad")
                         .IsRequired()
@@ -55,7 +55,7 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdLocal");
+                    b.HasKey("Id");
 
                     b.HasIndex("ResponsableId");
 
@@ -64,11 +64,11 @@ namespace ObligatorioProg3.Migrations
 
             modelBuilder.Entity("ObligatorioProg3.Models.Maquina", b =>
                 {
-                    b.Property<int>("IdMaquina")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMaquina"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Disponible")
                         .HasColumnType("bit");
@@ -76,7 +76,7 @@ namespace ObligatorioProg3.Migrations
                     b.Property<DateTime>("FechaCompra")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LocalIdLocal")
+                    b.Property<int>("LocalId")
                         .HasColumnType("int");
 
                     b.Property<int>("PrecioCompra")
@@ -85,17 +85,17 @@ namespace ObligatorioProg3.Migrations
                     b.Property<int>("TipoMId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TipoMaquinaIdTipoMaq")
+                    b.Property<int?>("TipoMaquinaId")
                         .HasColumnType("int");
 
                     b.Property<int>("VidaUtil")
                         .HasColumnType("int");
 
-                    b.HasKey("IdMaquina");
+                    b.HasKey("Id");
 
-                    b.HasIndex("LocalIdLocal");
+                    b.HasIndex("LocalId");
 
-                    b.HasIndex("TipoMaquinaIdTipoMaq");
+                    b.HasIndex("TipoMaquinaId");
 
                     b.ToTable("Maquina");
                 });
@@ -123,6 +123,34 @@ namespace ObligatorioProg3.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Responsable");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Calificacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TipoRutinaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("idTipoRutina")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TipoRutinaId");
+
+                    b.ToTable("Rutina");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
@@ -162,11 +190,11 @@ namespace ObligatorioProg3.Migrations
 
             modelBuilder.Entity("ObligatorioProg3.Models.TipoMaquina", b =>
                 {
-                    b.Property<int>("IdTipoMaq")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoMaq"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
@@ -176,18 +204,31 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdTipoMaq");
+                    b.HasKey("Id");
 
                     b.ToTable("TipoMaquina");
                 });
 
-            modelBuilder.Entity("ObligatorioProg3.Models.TipoSocio", b =>
+            modelBuilder.Entity("ObligatorioProg3.Models.TipoRutina", b =>
                 {
-                    b.Property<int>("IdTipoSocio")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoSocio"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TipoRutina");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.TipoSocio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Beneficios")
                         .IsRequired()
@@ -197,7 +238,7 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdTipoSocio");
+                    b.HasKey("Id");
 
                     b.ToTable("TipoSocio");
                 });
@@ -215,17 +256,26 @@ namespace ObligatorioProg3.Migrations
                 {
                     b.HasOne("ObligatorioProg3.Models.Local", "Local")
                         .WithMany("Maquinas")
-                        .HasForeignKey("LocalIdLocal")
+                        .HasForeignKey("LocalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ObligatorioProg3.Models.TipoMaquina", "TipoMaquina")
                         .WithMany()
-                        .HasForeignKey("TipoMaquinaIdTipoMaq");
+                        .HasForeignKey("TipoMaquinaId");
 
                     b.Navigation("Local");
 
                     b.Navigation("TipoMaquina");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
+                {
+                    b.HasOne("ObligatorioProg3.Models.TipoRutina", "TipoRutina")
+                        .WithMany()
+                        .HasForeignKey("TipoRutinaId");
+
+                    b.Navigation("TipoRutina");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>

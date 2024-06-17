@@ -18,6 +18,6 @@ namespace ObligatorioProg3.Models
         public Responsable? Responsable { get; set; }
 
         public List<Maquina> Maquinas { get; set; }
-        public List<Socio> Socios { get; set; }
+        public List<Socio>? Socios { get; set; }
     }
 }
