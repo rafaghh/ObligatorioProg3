@@ -7,7 +7,7 @@ namespace ObligatorioProg3.Models
     public class Maquina
     {
         [Key]
-        public int IdMaquina { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public Local Local { get; set; }

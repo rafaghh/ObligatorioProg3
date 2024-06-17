@@ -6,7 +6,7 @@ namespace ObligatorioProg3.Models
     public class Local
     {
         [Key]
-        public int IdLocal { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string Nombre { get; set; }
