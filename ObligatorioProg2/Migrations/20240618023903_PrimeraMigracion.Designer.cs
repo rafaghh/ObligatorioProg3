@@ -12,8 +12,8 @@ using ObligatorioProg3.Datos;
 namespace ObligatorioProg3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240618003530_PrimeraMigracionn")]
-    partial class PrimeraMigracionn
+    [Migration("20240618023903_PrimeraMigracion")]
+    partial class PrimeraMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ResponsableId")
+                    b.Property<int>("ResponsableId")
                         .HasColumnType("int");
 
                     b.Property<string>("Telefono")
@@ -242,7 +242,9 @@ namespace ObligatorioProg3.Migrations
                 {
                     b.HasOne("ObligatorioProg3.Models.Responsable", "Responsable")
                         .WithMany("Locales")
-                        .HasForeignKey("ResponsableId");
+                        .HasForeignKey("ResponsableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Responsable");
                 });
