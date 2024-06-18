@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ObligatorioProg3.Models.Socio>
+﻿@model IEnumerable<ObligatorioProg3.Models.Responsable>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,12 +12,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoSocio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Local)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
@@ -33,12 +27,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipoSocio.TipoNombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Local.Nombre)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
