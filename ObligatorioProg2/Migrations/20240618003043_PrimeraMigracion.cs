@@ -98,7 +98,7 @@ namespace ObligatorioProg3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Calificacion = table.Column<int>(type: "int", nullable: false),
-                    TipoRutinaId = table.Column<int>(type: "int", nullable: false)
+                    TipoRutinaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -107,8 +107,7 @@ namespace ObligatorioProg3.Migrations
                         name: "FK_Rutinas_TiposRutina_TipoRutinaId",
                         column: x => x.TipoRutinaId,
                         principalTable: "TiposRutina",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -117,11 +116,11 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LocalId = table.Column<int>(type: "int", nullable: false),
+                    LocalId = table.Column<int>(type: "int", nullable: true),
                     FechaCompra = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PrecioCompra = table.Column<int>(type: "int", nullable: false),
                     VidaUtil = table.Column<int>(type: "int", nullable: false),
-                    TipoMaquinaId = table.Column<int>(type: "int", nullable: false),
+                    TipoMaquinaId = table.Column<int>(type: "int", nullable: true),
                     Disponible = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -131,14 +130,12 @@ namespace ObligatorioProg3.Migrations
                         name: "FK_Maquinas_Locales_LocalId",
                         column: x => x.LocalId,
                         principalTable: "Locales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Maquinas_TiposMaquina_TipoMaquinaId",
                         column: x => x.TipoMaquinaId,
                         principalTable: "TiposMaquina",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

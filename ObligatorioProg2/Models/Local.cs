@@ -18,7 +18,7 @@ namespace ObligatorioProg3.Models
 
         [Display(Name = "Responsable")]
         [ForeignKey("Responsables")]
-        public int? ResponsableId { get; set; }
+        public int ResponsableId { get; set; }
         public Responsable? Responsable { get; set; }
 
 

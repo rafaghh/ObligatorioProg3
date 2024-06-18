@@ -1,4 +1,7 @@
-﻿namespace ObligatorioProg3.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace ObligatorioProg3.Models
 {
     public class Rutina
     {
@@ -8,8 +11,10 @@
 
         public int Calificacion { get; set; }
 
-        public TipoRutina? TipoRutina { get; set; }
 
-        public int TipoRutinaId { get; set; }
+        [Display(Name = "Rutina")]
+        [ForeignKey("TiposRutina")]
+        public int? TipoRutinaId { get; set; }
+        public TipoRutina? TipoRutina { get; set; }
     }
 }

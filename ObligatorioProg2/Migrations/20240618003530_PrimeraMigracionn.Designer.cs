@@ -12,8 +12,8 @@ using ObligatorioProg3.Datos;
 namespace ObligatorioProg3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240617182225_PrimeraMigracion")]
-    partial class PrimeraMigracion
+    [Migration("20240618003530_PrimeraMigracionn")]
+    partial class PrimeraMigracionn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ResponsableId")
+                    b.Property<int?>("ResponsableId")
                         .HasColumnType("int");
 
                     b.Property<string>("Telefono")
@@ -73,13 +73,13 @@ namespace ObligatorioProg3.Migrations
                     b.Property<DateTime>("FechaCompra")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LocalId")
+                    b.Property<int?>("LocalId")
                         .HasColumnType("int");
 
                     b.Property<int>("PrecioCompra")
                         .HasColumnType("int");
 
-                    b.Property<int>("TipoMaquinaId")
+                    b.Property<int?>("TipoMaquinaId")
                         .HasColumnType("int");
 
                     b.Property<int>("VidaUtil")
@@ -134,7 +134,7 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TipoRutinaId")
+                    b.Property<int?>("TipoRutinaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -242,9 +242,7 @@ namespace ObligatorioProg3.Migrations
                 {
                     b.HasOne("ObligatorioProg3.Models.Responsable", "Responsable")
                         .WithMany("Locales")
-                        .HasForeignKey("ResponsableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ResponsableId");
 
                     b.Navigation("Responsable");
                 });
@@ -253,15 +251,11 @@ namespace ObligatorioProg3.Migrations
                 {
                     b.HasOne("ObligatorioProg3.Models.Local", "Local")
                         .WithMany("Maquinas")
-                        .HasForeignKey("LocalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LocalId");
 
                     b.HasOne("ObligatorioProg3.Models.TipoMaquina", "TipoMaquina")
                         .WithMany("Maquinas")
-                        .HasForeignKey("TipoMaquinaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TipoMaquinaId");
 
                     b.Navigation("Local");
 
@@ -272,9 +266,7 @@ namespace ObligatorioProg3.Migrations
                 {
                     b.HasOne("ObligatorioProg3.Models.TipoRutina", "TipoRutina")
                         .WithMany("Rutinas")
-                        .HasForeignKey("TipoRutinaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TipoRutinaId");
 
                     b.Navigation("TipoRutina");
                 });
