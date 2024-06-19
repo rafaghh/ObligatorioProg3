@@ -11,7 +11,13 @@ namespace ObligatorioProg3.Models
 
         [Required]
         public string Nombre { get; set; }
-        public string Ciudad { get; set; }
+        
+        [Display(Name = "Ciudad")]
+        [ForeignKey("Ciudades")]
+        public int CiudadId { get; set; }
+        public Ciudad? Ciudad { get; set; }
+
+
         public string Direccion { get; set; }
         public string Telefono { get; set; }
 

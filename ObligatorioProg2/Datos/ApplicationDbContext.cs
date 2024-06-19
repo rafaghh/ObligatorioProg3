@@ -17,6 +17,7 @@ namespace ObligatorioProg3.Datos
         public DbSet<TipoRutina> TiposRutina { get; set; }
         public DbSet<TipoSocio> TiposSocio { get; set; }
         public DbSet<Rutina> Rutinas { get; set; }
+        public DbSet<Ciudad> Ciudades { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
