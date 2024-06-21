@@ -1,25 +1,22 @@
-﻿@model IEnumerable<ObligatorioProg3.Models.Rutina>
+﻿@model IEnumerable<ObligatorioProg3.Models.TipoMaquina>
 
 @{
-    ViewData["Title"] = "Gestión de Rutinas";
+    ViewData["Title"] = "Tipos de Máquinas";
 }
 
-<h1>Gestión de Rutinas</h1>
+<h1>Tipos de Máquinas</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success">Crear nueva rutina</a>
+    <a asp-action="Create" class="btn btn-success">Crear nuevo tipo de máquina</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.MaquinaNombre)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Calificacion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoRutina)
             </th>
             <th></th>
         </tr>
@@ -28,13 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.MaquinaNombre)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Calificacion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipoRutina.Nombre)
             </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
