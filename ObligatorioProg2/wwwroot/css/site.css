@@ -125,7 +125,6 @@ footer {
         }
 
     .table a {
-        color: #007bff;
         text-decoration: none;
         margin: 0 5px;
         transition: color 0.2s ease-in-out;
