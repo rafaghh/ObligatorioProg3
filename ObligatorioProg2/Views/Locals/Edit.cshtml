@@ -1,12 +1,11 @@
 ﻿@model ObligatorioProg3.Models.Local
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Local";
 }
 
-<h1>Edit</h1>
+<h1>Editar Local</h1>
 
-<h4>Local</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -38,15 +37,16 @@
                 <select asp-for="ResponsableId" class="form-control" asp-items="ViewBag.ResponsableId"></select>
                 <span asp-validation-for="ResponsableId" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver al Inicio</a>
 </div>
 
 @section Scripts {
