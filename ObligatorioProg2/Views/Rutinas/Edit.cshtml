@@ -24,7 +24,7 @@
                 <span asp-validation-for="Calificacion" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TipoRutinaId" class="control-label"></label>
+                <label asp-for="TipoRutinaId" class="control-label">Tipo de Rutina</label>
                 <select asp-for="TipoRutinaId" class="form-control" asp-items="ViewBag.TipoRutinaId"></select>
                 <span asp-validation-for="TipoRutinaId" class="text-danger"></span>
             </div>
@@ -36,9 +36,51 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <h4>Ejercicios Asignados</h4>
+    <div class="card-deck">
+        @foreach (var rutinaEjercicio in Model.RutinaEjercicios)
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@rutinaEjercicio.Ejercicio.Descripcion</h5>
+                    <form asp-action="DesasignarEjercicio" method="post" class="mt-2">
+                        <input type="hidden" name="rutinaId" value="@Model.Id" />
+                        <input type="hidden" name="ejercicioId" value="@rutinaEjercicio.EjercicioId" />
+                        <button type="submit" class="btn btn-danger">Desasignar Ejercicio</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <form asp-action="AsignarEjercicio">
+        <input type="hidden" name="rutinaId" value="@Model.Id" />
+        <div class="form-group">
+            <label for="ejercicioId" class="control-label">Asignar Ejercicio</label>
+            <select id="ejercicioId" name="ejercicioId" class="form-control" asp-items="ViewBag.Ejercicios"></select>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Asignar Ejercicio" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#ejercicioId').select2({
+                placeholder: "Seleccione un ejercicio",
+                allowClear: true
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

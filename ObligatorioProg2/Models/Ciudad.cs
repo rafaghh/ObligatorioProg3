@@ -9,5 +9,7 @@ namespace ObligatorioProg3.Models
 
         [Required]
         public string Nombre { get; set; }
+
+        public ICollection<Local> Locales { get; set; } = new List<Local>();
     }
 }

@@ -16,6 +16,8 @@ namespace ObligatorioProg3.Models
         [ForeignKey("Locales")]
         public int LocalId { get; set; }
         public Local? Local { get; set; }
+
+        public ICollection<SocioRutina> SocioRutinas { get; set; } = new List<SocioRutina>();
     }
 }
 

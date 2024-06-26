@@ -28,7 +28,7 @@ namespace ObligatorioProg3.Models
         public Responsable? Responsable { get; set; }
 
 
-        public List<Maquina> Maquinas { get; set; } = new List<Maquina>();
-        public List<Socio> Socios { get; set; } = new List<Socio>();
+        public ICollection<Maquina> Maquinas { get; set; } = new List<Maquina>();
+        public ICollection<Socio> Socios { get; set; } = new List<Socio>();
     }
 }

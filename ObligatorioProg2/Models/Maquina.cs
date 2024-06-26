@@ -17,12 +17,18 @@ namespace ObligatorioProg3.Models
         public DateTime FechaCompra { get; set; }
         public int PrecioCompra { get; set; }
         public int VidaUtil { get; set; }
+        public bool Disponible { get; set; }
+
 
         [Display(Name = "Tipo Maquina")]
         [ForeignKey("TiposMaquina")]
         public int? TipoMaquinaId { get; set; }
         public TipoMaquina? TipoMaquina { get; set; }
 
-        public bool Disponible { get; set; }
+        public int CalcularVidaUtilRestante()
+        {
+            int añosUsados = DateTime.Now.Year - FechaCompra.Year;
+            return VidaUtil - añosUsados;
+        }
     }
 }

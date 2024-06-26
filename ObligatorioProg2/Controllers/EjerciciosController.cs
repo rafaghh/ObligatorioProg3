@@ -10,23 +10,22 @@ using ObligatorioProg3.Models;
 
 namespace ObligatorioProg3.Controllers
 {
-    public class SociosController : Controller
+    public class EjerciciosController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SociosController(ApplicationDbContext context)
+        public EjerciciosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Socios
+        // GET: Ejercicios
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Socios.Include(s => s.Local).Include(s => s.TipoSocio);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.Ejercicios.ToListAsync());
         }
 
-        // GET: Socios/Details/5
+        // GET: Ejercicios/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,43 +33,39 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios
-                .Include(s => s.Local)
-                .Include(s => s.TipoSocio)
+            var ejercicio = await _context.Ejercicios
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            if (ejercicio == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(ejercicio);
         }
 
-        // GET: Socios/Create
+        // GET: Ejercicios/Create
         public IActionResult Create()
         {
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre");
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre");
             return View();
         }
 
-        // POST: Socios/Create
+        // POST: Ejercicios/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Create([Bind("Id,Descripcion")] Ejercicio ejercicio)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(socio);
+                _context.Add(ejercicio);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
-            return View(socio);
+            return View(ejercicio);
         }
 
-        // GET: Socios/Edit/5
+        // GET: Ejercicios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,22 +73,22 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios.FindAsync(id);
-            if (socio == null)
+            var ejercicio = await _context.Ejercicios.FindAsync(id);
+            if (ejercicio == null)
             {
                 return NotFound();
             }
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
-            return View(socio);
+            return View(ejercicio);
         }
 
-        // POST: Socios/Edit/5
+        // POST: Ejercicios/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion")] Ejercicio ejercicio)
         {
-            if (id != socio.Id)
+            if (id != ejercicio.Id)
             {
                 return NotFound();
             }
@@ -102,12 +97,12 @@ namespace ObligatorioProg3.Controllers
             {
                 try
                 {
-                    _context.Update(socio);
+                    _context.Update(ejercicio);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SocioExists(socio.Id))
+                    if (!EjercicioExists(ejercicio.Id))
                     {
                         return NotFound();
                     }
@@ -118,12 +113,10 @@ namespace ObligatorioProg3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
-            ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
-            return View(socio);
+            return View(ejercicio);
         }
 
-        // GET: Socios/Delete/5
+        // GET: Ejercicios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,36 +124,34 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios
-                .Include(s => s.Local)
-                .Include(s => s.TipoSocio)
+            var ejercicio = await _context.Ejercicios
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (socio == null)
+            if (ejercicio == null)
             {
                 return NotFound();
             }
 
-            return View(socio);
+            return View(ejercicio);
         }
 
-        // POST: Socios/Delete/5
+        // POST: Ejercicios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var socio = await _context.Socios.FindAsync(id);
-            if (socio != null)
+            var ejercicio = await _context.Ejercicios.FindAsync(id);
+            if (ejercicio != null)
             {
-                _context.Socios.Remove(socio);
+                _context.Ejercicios.Remove(ejercicio);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SocioExists(int id)
+        private bool EjercicioExists(int id)
         {
-            return _context.Socios.Any(e => e.Id == id);
+            return _context.Ejercicios.Any(e => e.Id == id);
         }
     }
 }

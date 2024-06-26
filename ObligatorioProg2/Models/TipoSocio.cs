@@ -11,7 +11,7 @@ namespace ObligatorioProg3.Models
         public string TipoNombre { get; set; }
         public string Beneficios { get; set; }
 
-        public ICollection<Socio> Socios { get; set; }
+        public ICollection<Socio> Socios { get; set; } = new List<Socio>();
     }
 }
 

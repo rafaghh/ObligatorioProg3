@@ -2,16 +2,13 @@
 
 namespace ObligatorioProg3.Models
 {
-    public class TipoMaquina
+    public class Ejercicio
     {
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public string MaquinaNombre { get; set; }
         public string Descripcion { get; set; }
 
-        public ICollection<Maquina> Maquinas { get; set; } = new List<Maquina>();
+        public ICollection<RutinaEjercicio> RutinaEjercicios { get; set; } = new List<RutinaEjercicio>();
     }
 }
-

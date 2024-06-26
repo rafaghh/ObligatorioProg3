@@ -9,6 +9,6 @@ namespace ObligatorioProg3.Models
         [Required]
         public string Nombre { get; set; }
 
-        public ICollection<Rutina> Rutinas { get; set; }
+        public ICollection<Rutina> Rutinas { get; set; } = new List<Rutina>();
     }
 }
