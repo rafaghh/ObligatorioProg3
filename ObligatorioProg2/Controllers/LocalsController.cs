@@ -61,15 +61,6 @@ namespace ObligatorioProg3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,CiudadId,Direccion,Telefono,ResponsableId")] Local local)
         {
-            // Validar si el responsable ya tiene un local asignado
-            var responsable = await _context.Responsables
-                .Include(r => r.Locales)
-                .FirstOrDefaultAsync(r => r.Id == local.ResponsableId);
-
-            if (responsable != null && responsable.Locales != null && responsable.Locales.Any())
-            {
-                ModelState.AddModelError("ResponsableId", "Este responsable ya tiene un local asignado.");
-            }
             if (ModelState.IsValid)
             {
                 _context.Add(local);
@@ -109,16 +100,6 @@ namespace ObligatorioProg3.Controllers
             if (id != local.Id)
             {
                 return NotFound();
-            }
-
-            // Validar si el responsable ya tiene un local asignado
-            var responsable = await _context.Responsables
-                .Include(r => r.Locales)
-                .FirstOrDefaultAsync(r => r.Id == local.ResponsableId);
-
-            if (responsable != null && responsable.Locales != null && responsable.Locales.Any())
-            {
-                ModelState.AddModelError("ResponsableId", "Este responsable ya tiene un local asignado.");
             }
 
             if (ModelState.IsValid)

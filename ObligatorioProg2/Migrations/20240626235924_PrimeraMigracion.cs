@@ -38,6 +38,21 @@ namespace ObligatorioProg3.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Responsables",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Responsables", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TiposMaquina",
                 columns: table => new
                 {
@@ -79,26 +94,6 @@ namespace ObligatorioProg3.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Rutinas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Calificacion = table.Column<int>(type: "int", nullable: false),
-                    TipoRutinaId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rutinas", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Rutinas_TiposRutina_TipoRutinaId",
-                        column: x => x.TipoRutinaId,
-                        principalTable: "TiposRutina",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Locales",
                 columns: table => new
                 {
@@ -119,6 +114,32 @@ namespace ObligatorioProg3.Migrations
                         principalTable: "Ciudades",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Locales_Responsables_ResponsableId",
+                        column: x => x.ResponsableId,
+                        principalTable: "Responsables",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rutinas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Calificacion = table.Column<int>(type: "int", nullable: false),
+                    TipoRutinaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rutinas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rutinas_TiposRutina_TipoRutinaId",
+                        column: x => x.TipoRutinaId,
+                        principalTable: "TiposRutina",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -150,29 +171,28 @@ namespace ObligatorioProg3.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Personas",
+                name: "Socios",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TipoId = table.Column<int>(type: "int", nullable: false),
+                    LocalId = table.Column<int>(type: "int", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    TipoId = table.Column<int>(type: "int", nullable: true),
-                    LocalId = table.Column<int>(type: "int", nullable: true)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Personas", x => x.Id);
+                    table.PrimaryKey("PK_Socios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Personas_Locales_LocalId",
+                        name: "FK_Socios_Locales_LocalId",
                         column: x => x.LocalId,
                         principalTable: "Locales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Personas_TiposSocio_TipoId",
+                        name: "FK_Socios_TiposSocio_TipoId",
                         column: x => x.TipoId,
                         principalTable: "TiposSocio",
                         principalColumn: "Id",
@@ -223,15 +243,15 @@ namespace ObligatorioProg3.Migrations
                 {
                     table.PrimaryKey("PK_SocioRutinas", x => new { x.SocioId, x.RutinaId });
                     table.ForeignKey(
-                        name: "FK_SocioRutinas_Personas_SocioId",
-                        column: x => x.SocioId,
-                        principalTable: "Personas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_SocioRutinas_Rutinas_RutinaId",
                         column: x => x.RutinaId,
                         principalTable: "Rutinas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SocioRutinas_Socios_SocioId",
+                        column: x => x.SocioId,
+                        principalTable: "Socios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -244,7 +264,8 @@ namespace ObligatorioProg3.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Locales_ResponsableId",
                 table: "Locales",
-                column: "ResponsableId");
+                column: "ResponsableId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Maquinas_LocalId",
@@ -255,16 +276,6 @@ namespace ObligatorioProg3.Migrations
                 name: "IX_Maquinas_TipoMaquinaId",
                 table: "Maquinas",
                 column: "TipoMaquinaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Personas_LocalId",
-                table: "Personas",
-                column: "LocalId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Personas_TipoId",
-                table: "Personas",
-                column: "TipoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RutinaEjercicios_EjercicioId",
@@ -286,26 +297,20 @@ namespace ObligatorioProg3.Migrations
                 table: "SocioRutinas",
                 column: "RutinaId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Locales_Personas_ResponsableId",
-                table: "Locales",
-                column: "ResponsableId",
-                principalTable: "Personas",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.CreateIndex(
+                name: "IX_Socios_LocalId",
+                table: "Socios",
+                column: "LocalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Socios_TipoId",
+                table: "Socios",
+                column: "TipoId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Locales_Ciudades_CiudadId",
-                table: "Locales");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Locales_Personas_ResponsableId",
-                table: "Locales");
-
             migrationBuilder.DropTable(
                 name: "RutinaEjercicios");
 
@@ -322,22 +327,25 @@ namespace ObligatorioProg3.Migrations
                 name: "Rutinas");
 
             migrationBuilder.DropTable(
+                name: "Socios");
+
+            migrationBuilder.DropTable(
                 name: "TiposMaquina");
 
             migrationBuilder.DropTable(
                 name: "TiposRutina");
 
             migrationBuilder.DropTable(
-                name: "Ciudades");
-
-            migrationBuilder.DropTable(
-                name: "Personas");
-
-            migrationBuilder.DropTable(
                 name: "Locales");
 
             migrationBuilder.DropTable(
                 name: "TiposSocio");
+
+            migrationBuilder.DropTable(
+                name: "Ciudades");
+
+            migrationBuilder.DropTable(
+                name: "Responsables");
         }
     }
 }

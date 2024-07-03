@@ -11,7 +11,6 @@ namespace ObligatorioProg3.Datos
 
         public DbSet<Ciudad> Ciudades { get; set; }
         public DbSet<Local> Locales { get; set; }
-        public DbSet<Persona> Personas { get; set; }
         public DbSet<Responsable> Responsables { get; set; }
         public DbSet<Socio> Socios { get; set; }
         public DbSet<Maquina> Maquinas { get; set; }
@@ -70,12 +69,6 @@ namespace ObligatorioProg3.Datos
                 .HasOne(re => re.Maquina)
                 .WithMany()
                 .HasForeignKey(re => re.MaquinaId);
-
-            modelBuilder.Entity<Local>()
-                .HasOne(l => l.Responsable)
-                .WithMany(r => r.Locales)
-                .HasForeignKey(l => l.ResponsableId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -86,7 +86,8 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasIndex("CiudadId");
 
-                    b.HasIndex("ResponsableId");
+                    b.HasIndex("ResponsableId")
+                        .IsUnique();
 
                     b.ToTable("Locales");
                 });
@@ -126,18 +127,13 @@ namespace ObligatorioProg3.Migrations
                     b.ToTable("Maquinas");
                 });
 
-            modelBuilder.Entity("ObligatorioProg3.Models.Persona", b =>
+            modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -153,11 +149,7 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Personas");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Persona");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("Responsables");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
@@ -206,6 +198,41 @@ namespace ObligatorioProg3.Migrations
                     b.HasIndex("MaquinaId");
 
                     b.ToTable("RutinaEjercicios");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LocalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocalId");
+
+                    b.HasIndex("TipoId");
+
+                    b.ToTable("Socios");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.SocioRutina", b =>
@@ -288,30 +315,6 @@ namespace ObligatorioProg3.Migrations
                     b.ToTable("TiposSocio");
                 });
 
-            modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
-                {
-                    b.HasBaseType("ObligatorioProg3.Models.Persona");
-
-                    b.HasDiscriminator().HasValue("Responsable");
-                });
-
-            modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
-                {
-                    b.HasBaseType("ObligatorioProg3.Models.Persona");
-
-                    b.Property<int>("LocalId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TipoId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("LocalId");
-
-                    b.HasIndex("TipoId");
-
-                    b.HasDiscriminator().HasValue("Socio");
-                });
-
             modelBuilder.Entity("ObligatorioProg3.Models.Local", b =>
                 {
                     b.HasOne("ObligatorioProg3.Models.Ciudad", "Ciudad")
@@ -321,9 +324,9 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired();
 
                     b.HasOne("ObligatorioProg3.Models.Responsable", "Responsable")
-                        .WithMany("Locales")
-                        .HasForeignKey("ResponsableId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithOne("Local")
+                        .HasForeignKey("ObligatorioProg3.Models.Local", "ResponsableId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ciudad");
@@ -380,25 +383,6 @@ namespace ObligatorioProg3.Migrations
                     b.Navigation("Rutina");
                 });
 
-            modelBuilder.Entity("ObligatorioProg3.Models.SocioRutina", b =>
-                {
-                    b.HasOne("ObligatorioProg3.Models.Rutina", "Rutina")
-                        .WithMany("SocioRutinas")
-                        .HasForeignKey("RutinaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ObligatorioProg3.Models.Socio", "Socio")
-                        .WithMany("SocioRutinas")
-                        .HasForeignKey("SocioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rutina");
-
-                    b.Navigation("Socio");
-                });
-
             modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
                 {
                     b.HasOne("ObligatorioProg3.Models.Local", "Local")
@@ -418,6 +402,25 @@ namespace ObligatorioProg3.Migrations
                     b.Navigation("TipoSocio");
                 });
 
+            modelBuilder.Entity("ObligatorioProg3.Models.SocioRutina", b =>
+                {
+                    b.HasOne("ObligatorioProg3.Models.Rutina", "Rutina")
+                        .WithMany("SocioRutinas")
+                        .HasForeignKey("RutinaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ObligatorioProg3.Models.Socio", "Socio")
+                        .WithMany("SocioRutinas")
+                        .HasForeignKey("SocioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Rutina");
+
+                    b.Navigation("Socio");
+                });
+
             modelBuilder.Entity("ObligatorioProg3.Models.Ciudad", b =>
                 {
                     b.Navigation("Locales");
@@ -435,10 +438,21 @@ namespace ObligatorioProg3.Migrations
                     b.Navigation("Socios");
                 });
 
+            modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
+                {
+                    b.Navigation("Local")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
                 {
                     b.Navigation("RutinaEjercicios");
 
+                    b.Navigation("SocioRutinas");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
+                {
                     b.Navigation("SocioRutinas");
                 });
 
@@ -455,16 +469,6 @@ namespace ObligatorioProg3.Migrations
             modelBuilder.Entity("ObligatorioProg3.Models.TipoSocio", b =>
                 {
                     b.Navigation("Socios");
-                });
-
-            modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
-                {
-                    b.Navigation("Locales");
-                });
-
-            modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
-                {
-                    b.Navigation("SocioRutinas");
                 });
 #pragma warning restore 612, 618
         }
