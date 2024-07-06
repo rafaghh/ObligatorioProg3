@@ -5,9 +5,6 @@ namespace ObligatorioProg3.Models
 {
     public class SocioRutina
     {
-        [Key]
-        public int Id { get; set; }
-
         [ForeignKey("Socio")]
         public int SocioId { get; set; }
         public Socio Socio { get; set; }

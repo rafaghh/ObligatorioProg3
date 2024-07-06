@@ -1,11 +1,12 @@
 ﻿@model ObligatorioProg3.Models.Ejercicio
 
 @{
-    ViewData["Title"] = "Editar Ejercicio";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Editar Ejercicio</h1>
+<h1>Edit</h1>
 
+<h4>Ejercicio</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -16,6 +17,11 @@
                 <label asp-for="Descripcion" class="control-label"></label>
                 <input asp-for="Descripcion" class="form-control" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TipoMaquinaId" class="control-label"></label>
+                <select asp-for="TipoMaquinaId" class="form-control" asp-items="ViewBag.TipoMaquinaId"></select>
+                <span asp-validation-for="TipoMaquinaId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

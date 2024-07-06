@@ -22,7 +22,8 @@ namespace ObligatorioProg3.Controllers
         // GET: Rutinas
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Rutinas.Include(r => r.TipoRutina);
+            var applicationDbContext = _context.Rutinas.Include(r => r.TipoRutina)
+                                                       .Include(r => r.SocioRutinas);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -38,6 +39,7 @@ namespace ObligatorioProg3.Controllers
                 .Include(r => r.TipoRutina)
                 .Include(r => r.RutinaEjercicios)
                 .ThenInclude(re => re.Ejercicio)
+                .Include(r => r.SocioRutinas)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rutina == null)
             {
@@ -57,7 +59,7 @@ namespace ObligatorioProg3.Controllers
         // POST: Rutinas/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descripcion,Calificacion,TipoRutinaId")] Rutina rutina)
+        public async Task<IActionResult> Create([Bind("Id,Descripcion,TipoRutinaId")] Rutina rutina)
         {
             if (ModelState.IsValid)
             {
@@ -80,6 +82,7 @@ namespace ObligatorioProg3.Controllers
             var rutina = await _context.Rutinas
                 .Include(r => r.RutinaEjercicios)
                 .ThenInclude(re => re.Ejercicio)
+                .Include(r => r.SocioRutinas)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (rutina == null)
@@ -96,7 +99,7 @@ namespace ObligatorioProg3.Controllers
         // POST: Rutinas/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion,Calificacion,TipoRutinaId")] Rutina rutina)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion,TipoRutinaId")] Rutina rutina)
         {
             if (id != rutina.Id)
             {
@@ -147,6 +150,7 @@ namespace ObligatorioProg3.Controllers
                 var rutina = await _context.Rutinas
                     .Include(r => r.RutinaEjercicios)
                     .ThenInclude(re => re.Ejercicio)
+                    .Include(r => r.SocioRutinas)
                     .FirstOrDefaultAsync(m => m.Id == rutinaId);
 
                 ViewData["TipoRutinaId"] = new SelectList(_context.TiposRutina, "Id", "Nombre", rutina.TipoRutinaId);

@@ -37,6 +37,8 @@ namespace ObligatorioProg3.Controllers
             var socio = await _context.Socios
                 .Include(s => s.Local)
                 .Include(s => s.TipoSocio)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Rutina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {
@@ -51,22 +53,40 @@ namespace ObligatorioProg3.Controllers
         {
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre");
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre");
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
             return View();
         }
 
         // POST: Socios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(socio);
                 await _context.SaveChangesAsync();
+
+                // Agregar rutinas con calificación
+                for (int i = 0; i < RutinaId.Count; i++)
+                {
+                    if (RutinaId[i] != 0)
+                    {
+                        _context.SocioRutinas.Add(new SocioRutina
+                        {
+                            SocioId = socio.Id,
+                            RutinaId = RutinaId[i],
+                            Calificacion = Calificacion[i]
+                        });
+                    }
+                }
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
             return View(socio);
         }
 
@@ -78,20 +98,24 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios.FindAsync(id);
+            var socio = await _context.Socios
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Rutina)
+                .FirstOrDefaultAsync(s => s.Id == id);
             if (socio == null)
             {
                 return NotFound();
             }
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
             return View(socio);
         }
 
         // POST: Socios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion)
         {
             if (id != socio.Id)
             {
@@ -120,6 +144,7 @@ namespace ObligatorioProg3.Controllers
             }
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
             return View(socio);
         }
 
@@ -134,6 +159,8 @@ namespace ObligatorioProg3.Controllers
             var socio = await _context.Socios
                 .Include(s => s.Local)
                 .Include(s => s.TipoSocio)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Rutina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {
@@ -152,6 +179,8 @@ namespace ObligatorioProg3.Controllers
             if (socio != null)
             {
                 _context.Socios.Remove(socio);
+                var socioRutinas = _context.SocioRutinas.Where(sr => sr.SocioId == id);
+                _context.SocioRutinas.RemoveRange(socioRutinas);
             }
 
             await _context.SaveChangesAsync();
@@ -161,6 +190,39 @@ namespace ObligatorioProg3.Controllers
         private bool SocioExists(int id)
         {
             return _context.Socios.Any(e => e.Id == id);
+        }
+
+        // POST: Socios/DesasignarRutina
+        [HttpPost]
+        public async Task<IActionResult> DesasignarRutina(int socioId, int rutinaId)
+        {
+            var socioRutina = await _context.SocioRutinas
+                .FirstOrDefaultAsync(sr => sr.SocioId == socioId && sr.RutinaId == rutinaId);
+
+            if (socioRutina != null)
+            {
+                _context.SocioRutinas.Remove(socioRutina);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Edit), new { id = socioId });
+        }
+
+        // POST: Socios/AsignarRutina
+        [HttpPost]
+        public async Task<IActionResult> AsignarRutina(int socioId, int rutinaId, int calificacion)
+        {
+            var socioRutina = new SocioRutina
+            {
+                SocioId = socioId,
+                RutinaId = rutinaId,
+                Calificacion = calificacion
+            };
+
+            _context.SocioRutinas.Add(socioRutina);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Edit), new { id = socioId });
         }
     }
 }

@@ -22,7 +22,8 @@ namespace ObligatorioProg3.Controllers
         // GET: Ejercicios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ejercicios.ToListAsync());
+            var applicationDbContext = _context.Ejercicios.Include(e => e.TipoMaquina);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Ejercicios/Details/5
@@ -34,6 +35,7 @@ namespace ObligatorioProg3.Controllers
             }
 
             var ejercicio = await _context.Ejercicios
+                .Include(e => e.TipoMaquina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ejercicio == null)
             {
@@ -46,6 +48,7 @@ namespace ObligatorioProg3.Controllers
         // GET: Ejercicios/Create
         public IActionResult Create()
         {
+            ViewData["TipoMaquinaId"] = new SelectList(_context.TiposMaquina, "Id", "MaquinaNombre");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace ObligatorioProg3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descripcion")] Ejercicio ejercicio)
+        public async Task<IActionResult> Create([Bind("Id,Descripcion,TipoMaquinaId")] Ejercicio ejercicio)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +65,7 @@ namespace ObligatorioProg3.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["TipoMaquinaId"] = new SelectList(_context.TiposMaquina, "Id", "MaquinaNombre", ejercicio.TipoMaquinaId);
             return View(ejercicio);
         }
 
@@ -78,6 +82,7 @@ namespace ObligatorioProg3.Controllers
             {
                 return NotFound();
             }
+            ViewData["TipoMaquinaId"] = new SelectList(_context.TiposMaquina, "Id", "MaquinaNombre", ejercicio.TipoMaquinaId);
             return View(ejercicio);
         }
 
@@ -86,7 +91,7 @@ namespace ObligatorioProg3.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion")] Ejercicio ejercicio)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion,TipoMaquinaId")] Ejercicio ejercicio)
         {
             if (id != ejercicio.Id)
             {
@@ -113,6 +118,7 @@ namespace ObligatorioProg3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["TipoMaquinaId"] = new SelectList(_context.TiposMaquina, "Id", "MaquinaNombre", ejercicio.TipoMaquinaId);
             return View(ejercicio);
         }
 
@@ -125,6 +131,7 @@ namespace ObligatorioProg3.Controllers
             }
 
             var ejercicio = await _context.Ejercicios
+                .Include(e => e.TipoMaquina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ejercicio == null)
             {

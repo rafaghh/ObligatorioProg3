@@ -22,11 +22,11 @@ namespace ObligatorioProg3.Datos
         public DbSet<TipoRutina> TiposRutina { get; set; }
         public DbSet<TipoSocio> TiposSocio { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configuraciones de las relaciones
             modelBuilder.Entity<SocioRutina>()
                 .HasKey(sr => new { sr.SocioId, sr.RutinaId });
 
@@ -65,10 +65,28 @@ namespace ObligatorioProg3.Datos
                 .WithMany(e => e.RutinaEjercicios)
                 .HasForeignKey(re => re.EjercicioId);
 
-            modelBuilder.Entity<RutinaEjercicio>()
-                .HasOne(re => re.Maquina)
-                .WithMany()
-                .HasForeignKey(re => re.MaquinaId);
+            // Juego de datos iniciales
+            modelBuilder.Entity<TipoSocio>().HasData(
+                new TipoSocio { Id = 1, TipoNombre = "Estándar", Beneficios = "Acceso limitado a áreas generales" },
+                new TipoSocio { Id = 2, TipoNombre = "Premium", Beneficios = "Acceso ilimitado a áreas generales" }
+            );
+
+            modelBuilder.Entity<TipoRutina>().HasData(
+                new TipoRutina { Id = 1, Nombre = "Salud" },
+                new TipoRutina { Id = 2, Nombre = "Competición amateur" },
+                new TipoRutina { Id = 3, Nombre = "Competición profesional" }
+            );
+
+            modelBuilder.Entity<Ciudad>().HasData(
+                new Ciudad { Id = 1, Nombre = "Montevideo" },
+                new Ciudad { Id = 2, Nombre = "Colonia" }
+            );
+
+            modelBuilder.Entity<TipoMaquina>().HasData(
+                new TipoMaquina { Id = 1, MaquinaNombre = "Cinta de correr", Descripcion = "Máquina para correr y caminar" },
+                new TipoMaquina { Id = 2, MaquinaNombre = "Bicicleta estática", Descripcion = "Máquina para ejercicio cardiovascular" }
+            );
         }
+
     }
 }

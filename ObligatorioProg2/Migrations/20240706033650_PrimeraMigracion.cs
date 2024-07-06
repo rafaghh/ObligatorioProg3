@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ObligatorioProg3.Migrations
 {
     /// <inheritdoc />
@@ -22,19 +24,6 @@ namespace ObligatorioProg3.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ciudades", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ejercicios",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ejercicios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,13 +112,31 @@ namespace ObligatorioProg3.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ejercicios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoMaquinaId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ejercicios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ejercicios_TiposMaquina_TipoMaquinaId",
+                        column: x => x.TipoMaquinaId,
+                        principalTable: "TiposMaquina",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rutinas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Calificacion = table.Column<int>(type: "int", nullable: false),
                     TipoRutinaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -204,9 +211,7 @@ namespace ObligatorioProg3.Migrations
                 columns: table => new
                 {
                     RutinaId = table.Column<int>(type: "int", nullable: false),
-                    EjercicioId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    MaquinaId = table.Column<int>(type: "int", nullable: true)
+                    EjercicioId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -217,11 +222,6 @@ namespace ObligatorioProg3.Migrations
                         principalTable: "Ejercicios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RutinaEjercicios_Maquinas_MaquinaId",
-                        column: x => x.MaquinaId,
-                        principalTable: "Maquinas",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_RutinaEjercicios_Rutinas_RutinaId",
                         column: x => x.RutinaId,
@@ -236,7 +236,6 @@ namespace ObligatorioProg3.Migrations
                 {
                     SocioId = table.Column<int>(type: "int", nullable: false),
                     RutinaId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
                     Calificacion = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -256,6 +255,48 @@ namespace ObligatorioProg3.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Ciudades",
+                columns: new[] { "Id", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, "Montevideo" },
+                    { 2, "Colonia" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TiposMaquina",
+                columns: new[] { "Id", "Descripcion", "MaquinaNombre" },
+                values: new object[,]
+                {
+                    { 1, "Máquina para correr y caminar", "Cinta de correr" },
+                    { 2, "Máquina para ejercicio cardiovascular", "Bicicleta estática" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TiposRutina",
+                columns: new[] { "Id", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, "Salud" },
+                    { 2, "Competición amateur" },
+                    { 3, "Competición profesional" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "TiposSocio",
+                columns: new[] { "Id", "Beneficios", "TipoNombre" },
+                values: new object[,]
+                {
+                    { 1, "Acceso limitado a áreas generales", "Estándar" },
+                    { 2, "Acceso ilimitado a áreas generales", "Premium" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ejercicios_TipoMaquinaId",
+                table: "Ejercicios",
+                column: "TipoMaquinaId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Locales_CiudadId",
                 table: "Locales",
@@ -264,8 +305,7 @@ namespace ObligatorioProg3.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Locales_ResponsableId",
                 table: "Locales",
-                column: "ResponsableId",
-                unique: true);
+                column: "ResponsableId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Maquinas_LocalId",
@@ -281,11 +321,6 @@ namespace ObligatorioProg3.Migrations
                 name: "IX_RutinaEjercicios_EjercicioId",
                 table: "RutinaEjercicios",
                 column: "EjercicioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RutinaEjercicios_MaquinaId",
-                table: "RutinaEjercicios",
-                column: "MaquinaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rutinas_TipoRutinaId",
@@ -312,6 +347,9 @@ namespace ObligatorioProg3.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Maquinas");
+
+            migrationBuilder.DropTable(
                 name: "RutinaEjercicios");
 
             migrationBuilder.DropTable(
@@ -319,9 +357,6 @@ namespace ObligatorioProg3.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ejercicios");
-
-            migrationBuilder.DropTable(
-                name: "Maquinas");
 
             migrationBuilder.DropTable(
                 name: "Rutinas");

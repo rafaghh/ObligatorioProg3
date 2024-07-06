@@ -12,16 +12,6 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TipoId" class="control-label"></label>
-                <select asp-for="TipoId" class="form-control" asp-items="ViewBag.TipoId"></select>
-                <span asp-validation-for="TipoId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocalId" class="control-label"></label>
-                <select asp-for="LocalId" class="form-control" asp-items="ViewBag.LocalId"></select>
-                <span asp-validation-for="LocalId" class="text-danger"></span>
-            </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -39,6 +29,16 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="TipoId" class="control-label"></label>
+                <select asp-for="TipoId" class="form-control" asp-items="ViewBag.TipoId"></select>
+                <span asp-validation-for="TipoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocalId" class="control-label"></label>
+                <select asp-for="LocalId" class="form-control" asp-items="ViewBag.LocalId"></select>
+                <span asp-validation-for="LocalId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -46,9 +46,56 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <h4>Rutinas Asignadas</h4>
+    <div class="card-deck">
+        @foreach (var socioRutina in Model.SocioRutinas)
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@socioRutina.Rutina.Descripcion</h5>
+                    <p class="card-text">Calificación: @socioRutina.Calificacion</p>
+                    <form asp-action="DesasignarRutina" method="post" class="mt-2">
+                        <input type="hidden" name="socioId" value="@Model.Id" />
+                        <input type="hidden" name="rutinaId" value="@socioRutina.RutinaId" />
+                        <button type="submit" class="btn btn-danger">Desasignar Rutina</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    <form asp-action="AsignarRutina" method="post">
+        <input type="hidden" name="socioId" value="@Model.Id" />
+        <div class="form-group">
+            <label for="rutinaId" class="control-label">Asignar Rutina</label>
+            <select id="rutinaId" name="rutinaId" class="form-control" asp-items="ViewBag.RutinaId"></select>
+        </div>
+        <div class="form-group">
+            <label for="calificacion" class="control-label">Calificación</label>
+            <input id="calificacion" name="calificacion" class="form-control" type="number" min="1" max="5" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Asignar Rutina" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('#rutinaId').select2({
+                placeholder: "Seleccione una rutina",
+                allowClear: true
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

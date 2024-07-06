@@ -9,7 +9,7 @@ namespace ObligatorioProg3.Models
         public int Id { get; set; }
 
         public string Descripcion { get; set; }
-        public int Calificacion { get; set; }
+
 
         [Display(Name = "Rutina")]
         [ForeignKey("TiposRutina")]
@@ -18,5 +18,19 @@ namespace ObligatorioProg3.Models
 
         public ICollection<SocioRutina> SocioRutinas { get; set; } = new List<SocioRutina>();
         public ICollection<RutinaEjercicio> RutinaEjercicios { get; set; } = new List<RutinaEjercicio>();
+
+        [NotMapped]
+        public double CalificacionPromedio
+        {
+            get
+            {
+                if (SocioRutinas == null || !SocioRutinas.Any())
+                {
+                    return 0;
+                }
+
+                return SocioRutinas.Average(sr => sr.Calificacion);
+            }
+        }
     }
 }
