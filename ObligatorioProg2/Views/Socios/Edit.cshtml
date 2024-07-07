@@ -6,6 +6,14 @@
 
 <h1>Edit</h1>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <h4>Socio</h4>
 <hr />
 <div class="row">
@@ -54,6 +62,7 @@
                 <div class="card-body">
                     <h5 class="card-title">@socioRutina.Rutina.Descripcion</h5>
                     <p class="card-text">Calificación: @socioRutina.Calificacion</p>
+                    <p class="card-text">Maquina: @socioRutina.Maquina.Id</p>
                     <form asp-action="DesasignarRutina" method="post" class="mt-2">
                         <input type="hidden" name="socioId" value="@Model.Id" />
                         <input type="hidden" name="rutinaId" value="@socioRutina.RutinaId" />
@@ -74,7 +83,11 @@
         </div>
         <div class="form-group">
             <label for="calificacion" class="control-label">Calificación</label>
-            <input id="calificacion" name="calificacion" class="form-control" type="number" min="1" max="5" />
+            <input id="calificacion" name="calificacion" class="form-control" type="number" min="1" max="10" />
+        </div>
+        <div class="form-group">
+            <label for="maquinaId" class="control-label">Maquina</label>
+            <select id="maquinaId" name="maquinaId" class="form-control" asp-items="ViewBag.MaquinaId"></select>
         </div>
         <div class="form-group">
             <input type="submit" value="Asignar Rutina" class="btn btn-success" />
@@ -91,6 +104,10 @@
         $(document).ready(function () {
             $('#rutinaId').select2({
                 placeholder: "Seleccione una rutina",
+                allowClear: true
+            });
+            $('#maquinaId').select2({
+                placeholder: "Seleccione una maquina",
                 allowClear: true
             });
         });

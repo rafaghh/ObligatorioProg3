@@ -9,6 +9,17 @@
 <p>
     <a asp-action="Create" class="btn btn-success">Crear nuevo local</a>
 </p>
+
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <div class="form-group mr-2">
+        <label for="localId" class="mr-2">Filtrar por Local</label>
+        <select id="localId" name="localId" class="form-control" asp-items="ViewBag.LocalId">
+            <option value="">Todos los Locales</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -31,29 +42,52 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ciudad.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Direccion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Responsable.Nombre)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ciudad.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direccion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Responsable.Nombre)
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Detalles</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
                 </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Máquinas por Tipo y Local</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tipo de Máquina</th>
+            <th>Local</th>
+            <th>Cantidad</th>
         </tr>
-}
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.MaquinasAgrupadas)
+        {
+            <tr>
+                <td>@item.TipoMaquina</td>
+                <td>@item.Local</td>
+                <td>@item.Cantidad</td>
+            </tr>
+        }
     </tbody>
 </table>

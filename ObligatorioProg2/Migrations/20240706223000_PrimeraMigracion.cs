@@ -236,11 +236,18 @@ namespace ObligatorioProg3.Migrations
                 {
                     SocioId = table.Column<int>(type: "int", nullable: false),
                     RutinaId = table.Column<int>(type: "int", nullable: false),
+                    MaquinaId = table.Column<int>(type: "int", nullable: false),
                     Calificacion = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SocioRutinas", x => new { x.SocioId, x.RutinaId });
+                    table.ForeignKey(
+                        name: "FK_SocioRutinas_Maquinas_MaquinaId",
+                        column: x => x.MaquinaId,
+                        principalTable: "Maquinas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SocioRutinas_Rutinas_RutinaId",
                         column: x => x.RutinaId,
@@ -328,6 +335,11 @@ namespace ObligatorioProg3.Migrations
                 column: "TipoRutinaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SocioRutinas_MaquinaId",
+                table: "SocioRutinas",
+                column: "MaquinaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SocioRutinas_RutinaId",
                 table: "SocioRutinas",
                 column: "RutinaId");
@@ -347,9 +359,6 @@ namespace ObligatorioProg3.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Maquinas");
-
-            migrationBuilder.DropTable(
                 name: "RutinaEjercicios");
 
             migrationBuilder.DropTable(
@@ -357,6 +366,9 @@ namespace ObligatorioProg3.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ejercicios");
+
+            migrationBuilder.DropTable(
+                name: "Maquinas");
 
             migrationBuilder.DropTable(
                 name: "Rutinas");

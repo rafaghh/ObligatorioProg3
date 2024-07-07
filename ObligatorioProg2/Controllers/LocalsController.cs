@@ -20,13 +20,35 @@ namespace ObligatorioProg3.Controllers
         }
 
         // GET: Locals
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(int? localId)
         {
-            var applicationDbContext = _context.Locales.Include(l => l.Ciudad).Include(l => l.Responsable);
-            return View(await applicationDbContext.ToListAsync());
+            var locales = await _context.Locales.ToListAsync();
+            ViewData["LocalId"] = new SelectList(locales, "Id", "Nombre");
+
+            var maquinasQuery = _context.Maquinas.Include(m => m.TipoMaquina).Include(m => m.Local).AsQueryable();
+
+            if (localId.HasValue)
+            {
+                maquinasQuery = maquinasQuery.Where(m => m.LocalId == localId);
+            }
+
+            var maquinasAgrupadas = maquinasQuery
+                .GroupBy(m => new { m.TipoMaquina.MaquinaNombre, m.Local.Nombre })
+                .Select(g => new
+                {
+                    TipoMaquina = g.Key.MaquinaNombre,
+                    Local = g.Key.Nombre,
+                    Cantidad = g.Count()
+                }).ToList();
+
+            ViewBag.MaquinasAgrupadas = maquinasAgrupadas;
+
+            return View(locales);
         }
 
         // GET: Locals/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +69,7 @@ namespace ObligatorioProg3.Controllers
         }
 
         // GET: Locals/Create
+        [HttpGet]
         public IActionResult Create()
         {
             ViewData["CiudadId"] = new SelectList(_context.Ciudades, "Id", "Nombre");
@@ -55,8 +78,6 @@ namespace ObligatorioProg3.Controllers
         }
 
         // POST: Locals/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nombre,CiudadId,Direccion,Telefono,ResponsableId")] Local local)
@@ -73,6 +94,7 @@ namespace ObligatorioProg3.Controllers
         }
 
         // GET: Locals/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,8 +113,6 @@ namespace ObligatorioProg3.Controllers
         }
 
         // POST: Locals/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,CiudadId,Direccion,Telefono,ResponsableId")] Local local)
@@ -128,6 +148,7 @@ namespace ObligatorioProg3.Controllers
         }
 
         // GET: Locals/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

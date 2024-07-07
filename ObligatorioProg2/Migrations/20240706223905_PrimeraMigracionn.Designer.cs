@@ -12,8 +12,8 @@ using ObligatorioProg3.Datos;
 namespace ObligatorioProg3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240706033650_PrimeraMigracion")]
-    partial class PrimeraMigracion
+    [Migration("20240706223905_PrimeraMigracionn")]
+    partial class PrimeraMigracionn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -254,7 +254,12 @@ namespace ObligatorioProg3.Migrations
                     b.Property<int>("Calificacion")
                         .HasColumnType("int");
 
+                    b.Property<int?>("MaquinaId")
+                        .HasColumnType("int");
+
                     b.HasKey("SocioId", "RutinaId");
+
+                    b.HasIndex("MaquinaId");
 
                     b.HasIndex("RutinaId");
 
@@ -457,6 +462,10 @@ namespace ObligatorioProg3.Migrations
 
             modelBuilder.Entity("ObligatorioProg3.Models.SocioRutina", b =>
                 {
+                    b.HasOne("ObligatorioProg3.Models.Maquina", "Maquina")
+                        .WithMany()
+                        .HasForeignKey("MaquinaId");
+
                     b.HasOne("ObligatorioProg3.Models.Rutina", "Rutina")
                         .WithMany("SocioRutinas")
                         .HasForeignKey("RutinaId")
@@ -468,6 +477,8 @@ namespace ObligatorioProg3.Migrations
                         .HasForeignKey("SocioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Maquina");
 
                     b.Navigation("Rutina");
 

@@ -20,10 +20,25 @@ namespace ObligatorioProg3.Controllers
         }
 
         // GET: Maquinas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var applicationDbContext = _context.Maquinas.Include(m => m.Local).Include(m => m.TipoMaquina);
-            return View(await applicationDbContext.ToListAsync());
+            ViewData["FechaCompraSortParm"] = String.IsNullOrEmpty(sortOrder) ? "fecha_desc" : "";
+            ViewData["CurrentSort"] = sortOrder;
+
+            var maquinas = from m in _context.Maquinas.Include(m => m.Local).Include(m => m.TipoMaquina)
+                           select m;
+
+            switch (sortOrder)
+            {
+                case "fecha_desc":
+                    maquinas = maquinas.OrderByDescending(m => m.FechaCompra);
+                    break;
+                default:
+                    maquinas = maquinas.OrderBy(m => m.FechaCompra);
+                    break;
+            }
+
+            return View(await maquinas.ToListAsync());
         }
 
         // GET: Maquinas/Details/5
@@ -43,6 +58,11 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
+            // Calcular los años de vida útil restantes
+            int anosVidaUtilRestantes = maquina.VidaUtil - (DateTime.Now.Year - maquina.FechaCompra.Year);
+            string vidaUtilMensaje = anosVidaUtilRestantes > 0 ? anosVidaUtilRestantes.ToString() : "Vida útil cumplida";
+            ViewData["AnosVidaUtilRestantes"] = vidaUtilMensaje;
+
             return View(maquina);
         }
 
@@ -55,8 +75,6 @@ namespace ObligatorioProg3.Controllers
         }
 
         // POST: Maquinas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,LocalId,FechaCompra,PrecioCompra,VidaUtil,TipoMaquinaId,Disponible")] Maquina maquina)
@@ -91,8 +109,6 @@ namespace ObligatorioProg3.Controllers
         }
 
         // POST: Maquinas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,LocalId,FechaCompra,PrecioCompra,VidaUtil,TipoMaquinaId,Disponible")] Maquina maquina)
@@ -166,5 +182,6 @@ namespace ObligatorioProg3.Controllers
         {
             return _context.Maquinas.Any(e => e.Id == id);
         }
-    }
+    
+}
 }

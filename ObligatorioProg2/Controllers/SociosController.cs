@@ -20,10 +20,19 @@ namespace ObligatorioProg3.Controllers
         }
 
         // GET: Socios
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? tipoId)
         {
-            var applicationDbContext = _context.Socios.Include(s => s.Local).Include(s => s.TipoSocio);
-            return View(await applicationDbContext.ToListAsync());
+            var tiposSocio = await _context.TiposSocio.ToListAsync();
+            ViewData["TipoId"] = new SelectList(tiposSocio, "Id", "TipoNombre");
+
+            IQueryable<Socio> socios = _context.Socios.Include(s => s.Local).Include(s => s.TipoSocio);
+
+            if (tipoId.HasValue)
+            {
+                socios = socios.Where(s => s.TipoId == tipoId);
+            }
+
+            return View(await socios.ToListAsync());
         }
 
         // GET: Socios/Details/5
@@ -39,6 +48,8 @@ namespace ObligatorioProg3.Controllers
                 .Include(s => s.TipoSocio)
                 .Include(s => s.SocioRutinas)
                 .ThenInclude(sr => sr.Rutina)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Maquina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {
@@ -54,39 +65,25 @@ namespace ObligatorioProg3.Controllers
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre");
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre");
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View();
         }
 
         // POST: Socios/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion)
+        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion, List<int> MaquinaId)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(socio);
                 await _context.SaveChangesAsync();
-
-                // Agregar rutinas con calificación
-                for (int i = 0; i < RutinaId.Count; i++)
-                {
-                    if (RutinaId[i] != 0)
-                    {
-                        _context.SocioRutinas.Add(new SocioRutina
-                        {
-                            SocioId = socio.Id,
-                            RutinaId = RutinaId[i],
-                            Calificacion = Calificacion[i]
-                        });
-                    }
-                }
-                await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
@@ -101,6 +98,8 @@ namespace ObligatorioProg3.Controllers
             var socio = await _context.Socios
                 .Include(s => s.SocioRutinas)
                 .ThenInclude(sr => sr.Rutina)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Maquina)
                 .FirstOrDefaultAsync(s => s.Id == id);
             if (socio == null)
             {
@@ -109,13 +108,13 @@ namespace ObligatorioProg3.Controllers
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
-        // POST: Socios/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion)
+        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion, List<int> MaquinaId)
         {
             if (id != socio.Id)
             {
@@ -145,6 +144,7 @@ namespace ObligatorioProg3.Controllers
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
@@ -210,13 +210,36 @@ namespace ObligatorioProg3.Controllers
 
         // POST: Socios/AsignarRutina
         [HttpPost]
-        public async Task<IActionResult> AsignarRutina(int socioId, int rutinaId, int calificacion)
+        public async Task<IActionResult> AsignarRutina(int socioId, int rutinaId, int calificacion, int maquinaId)
         {
+            var socio = await _context.Socios.FindAsync(socioId);
+            var maquina = await _context.Maquinas.FindAsync(maquinaId);
+
+            if (maquina == null || socio == null)
+            {
+                return NotFound();
+            }
+
+            // Validación 1: Verificar si el local del socio y el local de la máquina son iguales
+            if (socio.LocalId != maquina.LocalId)
+            {
+                TempData["ErrorMessage"] = "El local del socio y el local de la máquina deben ser el mismo.";
+                return RedirectToAction(nameof(Edit), new { id = socioId });
+            }
+
+            // Validación 2: Verificar si la máquina está disponible
+            if (!maquina.Disponible)
+            {
+                TempData["ErrorMessage"] = "La máquina no está disponible.";
+                return RedirectToAction(nameof(Edit), new { id = socioId });
+            }
+
             var socioRutina = new SocioRutina
             {
                 SocioId = socioId,
                 RutinaId = rutinaId,
-                Calificacion = calificacion
+                Calificacion = calificacion,
+                MaquinaId = maquinaId
             };
 
             _context.SocioRutinas.Add(socioRutina);
