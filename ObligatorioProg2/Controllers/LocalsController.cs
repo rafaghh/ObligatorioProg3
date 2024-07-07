@@ -23,7 +23,11 @@ namespace ObligatorioProg3.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? localId)
         {
-            var locales = await _context.Locales.ToListAsync();
+            var locales = await _context.Locales
+                .Include(l => l.Ciudad) 
+                .Include(l => l.Responsable) 
+                .ToListAsync();
+
             ViewData["LocalId"] = new SelectList(locales, "Id", "Nombre");
 
             var maquinasQuery = _context.Maquinas.Include(m => m.TipoMaquina).Include(m => m.Local).AsQueryable();
