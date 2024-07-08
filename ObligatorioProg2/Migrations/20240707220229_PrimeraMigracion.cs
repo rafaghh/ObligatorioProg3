@@ -27,21 +27,6 @@ namespace ObligatorioProg3.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Responsables",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Responsables", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TiposMaquina",
                 columns: table => new
                 {
@@ -101,12 +86,6 @@ namespace ObligatorioProg3.Migrations
                         name: "FK_Locales_Ciudades_CiudadId",
                         column: x => x.CiudadId,
                         principalTable: "Ciudades",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Locales_Responsables_ResponsableId",
-                        column: x => x.ResponsableId,
-                        principalTable: "Responsables",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -175,6 +154,28 @@ namespace ObligatorioProg3.Migrations
                         column: x => x.TipoMaquinaId,
                         principalTable: "TiposMaquina",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Responsables",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LocalId = table.Column<int>(type: "int", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Responsables", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Responsables_Locales_LocalId",
+                        column: x => x.LocalId,
+                        principalTable: "Locales",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -299,6 +300,78 @@ namespace ObligatorioProg3.Migrations
                     { 2, "Acceso ilimitado a áreas generales", "Premium" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "Ejercicios",
+                columns: new[] { "Id", "Descripcion", "TipoMaquinaId" },
+                values: new object[,]
+                {
+                    { 1, "Correr en Cinta", 1 },
+                    { 2, "Pedaleo en Bicicleta", 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Locales",
+                columns: new[] { "Id", "CiudadId", "Direccion", "Nombre", "ResponsableId", "Telefono" },
+                values: new object[,]
+                {
+                    { 1, 1, "Calle Falsa 123", "Gimnasio Central", 1, "22001234" },
+                    { 2, 2, "Avenida Siempreviva 742", "Gimnasio Este", 2, "23004567" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Rutinas",
+                columns: new[] { "Id", "Descripcion", "TipoRutinaId" },
+                values: new object[,]
+                {
+                    { 1, "Rutina de Salud Básica", 1 },
+                    { 2, "Rutina de Competición Amateur", 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Maquinas",
+                columns: new[] { "Id", "Disponible", "FechaCompra", "LocalId", "PrecioCompra", "TipoMaquinaId", "VidaUtil" },
+                values: new object[,]
+                {
+                    { 1, true, new DateTime(2023, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 1500, 1, 5 },
+                    { 2, false, new DateTime(2022, 3, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 1300, 2, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Responsables",
+                columns: new[] { "Id", "Email", "LocalId", "Nombre", "Telefono" },
+                values: new object[,]
+                {
+                    { 1, "juan.perez@example.com", 1, "Juan Perez", "099123456" },
+                    { 2, "maria.gomez@example.com", 2, "Maria Gomez", "099654321" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RutinaEjercicios",
+                columns: new[] { "EjercicioId", "RutinaId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Socios",
+                columns: new[] { "Id", "Email", "LocalId", "Nombre", "Telefono", "TipoId" },
+                values: new object[,]
+                {
+                    { 1, "carlos.ramirez@example.com", 1, "Carlos Ramirez", "098765432", 1 },
+                    { 2, "ana.fernandez@example.com", 2, "Ana Fernandez", "097654321", 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SocioRutinas",
+                columns: new[] { "RutinaId", "SocioId", "Calificacion", "MaquinaId" },
+                values: new object[,]
+                {
+                    { 1, 1, 5, 1 },
+                    { 2, 2, 4, 2 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Ejercicios_TipoMaquinaId",
                 table: "Ejercicios",
@@ -310,11 +383,6 @@ namespace ObligatorioProg3.Migrations
                 column: "CiudadId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Locales_ResponsableId",
-                table: "Locales",
-                column: "ResponsableId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Maquinas_LocalId",
                 table: "Maquinas",
                 column: "LocalId");
@@ -323,6 +391,13 @@ namespace ObligatorioProg3.Migrations
                 name: "IX_Maquinas_TipoMaquinaId",
                 table: "Maquinas",
                 column: "TipoMaquinaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Responsables_LocalId",
+                table: "Responsables",
+                column: "LocalId",
+                unique: true,
+                filter: "[LocalId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RutinaEjercicios_EjercicioId",
@@ -359,6 +434,9 @@ namespace ObligatorioProg3.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Responsables");
+
+            migrationBuilder.DropTable(
                 name: "RutinaEjercicios");
 
             migrationBuilder.DropTable(
@@ -390,9 +468,6 @@ namespace ObligatorioProg3.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ciudades");
-
-            migrationBuilder.DropTable(
-                name: "Responsables");
         }
     }
 }

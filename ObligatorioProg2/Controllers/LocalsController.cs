@@ -88,8 +88,30 @@ namespace ObligatorioProg3.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Verificar si el responsable ya tiene un local asignado
+                var existingLocal = await _context.Locales
+                    .FirstOrDefaultAsync(l => l.ResponsableId == local.ResponsableId);
+
+                if (existingLocal != null)
+                {
+                    ModelState.AddModelError("ResponsableId", "El responsable ya tiene un local asignado.");
+                    ViewData["CiudadId"] = new SelectList(_context.Ciudades, "Id", "Nombre", local.CiudadId);
+                    ViewData["ResponsableId"] = new SelectList(_context.Responsables, "Id", "Nombre", local.ResponsableId);
+                    return View(local);
+                }
+
                 _context.Add(local);
                 await _context.SaveChangesAsync();
+
+                // Actualizar el Responsable para reflejar la relación uno a uno
+                var responsable = await _context.Responsables.FindAsync(local.ResponsableId);
+                if (responsable != null)
+                {
+                    responsable.LocalId = local.Id;
+                    _context.Update(responsable);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CiudadId"] = new SelectList(_context.Ciudades, "Id", "Nombre", local.CiudadId);
@@ -128,8 +150,41 @@ namespace ObligatorioProg3.Controllers
 
             if (ModelState.IsValid)
             {
+                // Verificar si el responsable ya tiene un local asignado y no es el actual
+                var existingLocal = await _context.Locales
+                    .FirstOrDefaultAsync(l => l.ResponsableId == local.ResponsableId && l.Id != local.Id);
+
+                if (existingLocal != null)
+                {
+                    ModelState.AddModelError("ResponsableId", "El responsable ya tiene un local asignado.");
+                    ViewData["CiudadId"] = new SelectList(_context.Ciudades, "Id", "Nombre", local.CiudadId);
+                    ViewData["ResponsableId"] = new SelectList(_context.Responsables, "Id", "Nombre", local.ResponsableId);
+                    return View(local);
+                }
+
                 try
                 {
+                    // Obtener el Local actual antes de actualizar
+                    var currentLocal = await _context.Locales.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
+                    if (currentLocal != null && currentLocal.ResponsableId != local.ResponsableId)
+                    {
+                        // Desasignar el Responsable anterior
+                        var previousResponsable = await _context.Responsables.FindAsync(currentLocal.ResponsableId);
+                        if (previousResponsable != null)
+                        {
+                            previousResponsable.LocalId = null;
+                            _context.Update(previousResponsable);
+                        }
+
+                        // Asignar el nuevo Responsable
+                        var newResponsable = await _context.Responsables.FindAsync(local.ResponsableId);
+                        if (newResponsable != null)
+                        {
+                            newResponsable.LocalId = local.Id;
+                            _context.Update(newResponsable);
+                        }
+                    }
+
                     _context.Update(local);
                     await _context.SaveChangesAsync();
                 }

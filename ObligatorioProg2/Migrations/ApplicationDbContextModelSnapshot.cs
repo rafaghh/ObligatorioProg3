@@ -71,6 +71,20 @@ namespace ObligatorioProg3.Migrations
                     b.HasIndex("TipoMaquinaId");
 
                     b.ToTable("Ejercicios");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Correr en Cinta",
+                            TipoMaquinaId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Pedaleo en Bicicleta",
+                            TipoMaquinaId = 2
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Local", b =>
@@ -103,9 +117,27 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasIndex("CiudadId");
 
-                    b.HasIndex("ResponsableId");
-
                     b.ToTable("Locales");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CiudadId = 1,
+                            Direccion = "Calle Falsa 123",
+                            Nombre = "Gimnasio Central",
+                            ResponsableId = 1,
+                            Telefono = "22001234"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CiudadId = 2,
+                            Direccion = "Avenida Siempreviva 742",
+                            Nombre = "Gimnasio Este",
+                            ResponsableId = 2,
+                            Telefono = "23004567"
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Maquina", b =>
@@ -141,6 +173,28 @@ namespace ObligatorioProg3.Migrations
                     b.HasIndex("TipoMaquinaId");
 
                     b.ToTable("Maquinas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Disponible = true,
+                            FechaCompra = new DateTime(2023, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LocalId = 1,
+                            PrecioCompra = 1500,
+                            TipoMaquinaId = 1,
+                            VidaUtil = 5
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Disponible = false,
+                            FechaCompra = new DateTime(2022, 3, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LocalId = 2,
+                            PrecioCompra = 1300,
+                            TipoMaquinaId = 2,
+                            VidaUtil = 3
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
@@ -155,6 +209,9 @@ namespace ObligatorioProg3.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LocalId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -165,7 +222,29 @@ namespace ObligatorioProg3.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocalId")
+                        .IsUnique()
+                        .HasFilter("[LocalId] IS NOT NULL");
+
                     b.ToTable("Responsables");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "juan.perez@example.com",
+                            LocalId = 1,
+                            Nombre = "Juan Perez",
+                            Telefono = "099123456"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "maria.gomez@example.com",
+                            LocalId = 2,
+                            Nombre = "Maria Gomez",
+                            Telefono = "099654321"
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
@@ -188,6 +267,20 @@ namespace ObligatorioProg3.Migrations
                     b.HasIndex("TipoRutinaId");
 
                     b.ToTable("Rutinas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Descripcion = "Rutina de Salud Básica",
+                            TipoRutinaId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Descripcion = "Rutina de Competición Amateur",
+                            TipoRutinaId = 2
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.RutinaEjercicio", b =>
@@ -203,6 +296,18 @@ namespace ObligatorioProg3.Migrations
                     b.HasIndex("EjercicioId");
 
                     b.ToTable("RutinaEjercicios");
+
+                    b.HasData(
+                        new
+                        {
+                            RutinaId = 1,
+                            EjercicioId = 1
+                        },
+                        new
+                        {
+                            RutinaId = 2,
+                            EjercicioId = 2
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Socio", b =>
@@ -238,6 +343,26 @@ namespace ObligatorioProg3.Migrations
                     b.HasIndex("TipoId");
 
                     b.ToTable("Socios");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "carlos.ramirez@example.com",
+                            LocalId = 1,
+                            Nombre = "Carlos Ramirez",
+                            Telefono = "098765432",
+                            TipoId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "ana.fernandez@example.com",
+                            LocalId = 2,
+                            Nombre = "Ana Fernandez",
+                            Telefono = "097654321",
+                            TipoId = 2
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.SocioRutina", b =>
@@ -261,6 +386,22 @@ namespace ObligatorioProg3.Migrations
                     b.HasIndex("RutinaId");
 
                     b.ToTable("SocioRutinas");
+
+                    b.HasData(
+                        new
+                        {
+                            SocioId = 1,
+                            RutinaId = 1,
+                            Calificacion = 5,
+                            MaquinaId = 1
+                        },
+                        new
+                        {
+                            SocioId = 2,
+                            RutinaId = 2,
+                            Calificacion = 4,
+                            MaquinaId = 2
+                        });
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.TipoMaquina", b =>
@@ -384,15 +525,7 @@ namespace ObligatorioProg3.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ObligatorioProg3.Models.Responsable", "Responsable")
-                        .WithMany("Locales")
-                        .HasForeignKey("ResponsableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Ciudad");
-
-                    b.Navigation("Responsable");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Maquina", b =>
@@ -408,6 +541,16 @@ namespace ObligatorioProg3.Migrations
                     b.Navigation("Local");
 
                     b.Navigation("TipoMaquina");
+                });
+
+            modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
+                {
+                    b.HasOne("ObligatorioProg3.Models.Local", "Local")
+                        .WithOne("Responsable")
+                        .HasForeignKey("ObligatorioProg3.Models.Responsable", "LocalId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Local");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
@@ -498,12 +641,9 @@ namespace ObligatorioProg3.Migrations
                 {
                     b.Navigation("Maquinas");
 
-                    b.Navigation("Socios");
-                });
+                    b.Navigation("Responsable");
 
-            modelBuilder.Entity("ObligatorioProg3.Models.Responsable", b =>
-                {
-                    b.Navigation("Locales");
+                    b.Navigation("Socios");
                 });
 
             modelBuilder.Entity("ObligatorioProg3.Models.Rutina", b =>
