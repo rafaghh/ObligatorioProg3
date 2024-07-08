@@ -22,7 +22,8 @@ namespace ObligatorioProg3.Controllers
         // GET: Rutinas
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Rutinas.Include(r => r.TipoRutina);
+            var applicationDbContext = _context.Rutinas.Include(r => r.TipoRutina)
+                                                       .Include(r => r.SocioRutinas);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -36,6 +37,9 @@ namespace ObligatorioProg3.Controllers
 
             var rutina = await _context.Rutinas
                 .Include(r => r.TipoRutina)
+                .Include(r => r.RutinaEjercicios)
+                .ThenInclude(re => re.Ejercicio)
+                .Include(r => r.SocioRutinas)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (rutina == null)
             {
@@ -53,11 +57,9 @@ namespace ObligatorioProg3.Controllers
         }
 
         // POST: Rutinas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descripcion,Calificacion,TipoRutinaId")] Rutina rutina)
+        public async Task<IActionResult> Create([Bind("Id,Descripcion,TipoRutinaId")] Rutina rutina)
         {
             if (ModelState.IsValid)
             {
@@ -77,21 +79,27 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var rutina = await _context.Rutinas.FindAsync(id);
+            var rutina = await _context.Rutinas
+                .Include(r => r.RutinaEjercicios)
+                .ThenInclude(re => re.Ejercicio)
+                .Include(r => r.SocioRutinas)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (rutina == null)
             {
                 return NotFound();
             }
+
             ViewData["TipoRutinaId"] = new SelectList(_context.TiposRutina, "Id", "Nombre", rutina.TipoRutinaId);
+            ViewData["Ejercicios"] = new SelectList(_context.Ejercicios, "Id", "Descripcion");
+
             return View(rutina);
         }
 
         // POST: Rutinas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion,Calificacion,TipoRutinaId")] Rutina rutina)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Descripcion,TipoRutinaId")] Rutina rutina)
         {
             if (id != rutina.Id)
             {
@@ -119,7 +127,66 @@ namespace ObligatorioProg3.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["TipoRutinaId"] = new SelectList(_context.TiposRutina, "Id", "Nombre", rutina.TipoRutinaId);
+            ViewData["Ejercicios"] = new SelectList(_context.Ejercicios, "Id", "Descripcion");
+
             return View(rutina);
+        }
+
+        // POST: Rutinas/AsignarEjercicio
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AsignarEjercicio(int rutinaId, int ejercicioId)
+        {
+            if (!RutinaExists(rutinaId))
+            {
+                return NotFound();
+            }
+
+            if (_context.RutinaEjercicios.Any(re => re.RutinaId == rutinaId && re.EjercicioId == ejercicioId))
+            {
+                ModelState.AddModelError("", "El ejercicio ya está asignado a esta rutina.");
+
+                // Recargar la vista Edit con el error
+                var rutina = await _context.Rutinas
+                    .Include(r => r.RutinaEjercicios)
+                    .ThenInclude(re => re.Ejercicio)
+                    .Include(r => r.SocioRutinas)
+                    .FirstOrDefaultAsync(m => m.Id == rutinaId);
+
+                ViewData["TipoRutinaId"] = new SelectList(_context.TiposRutina, "Id", "Nombre", rutina.TipoRutinaId);
+                ViewData["Ejercicios"] = new SelectList(_context.Ejercicios, "Id", "Descripcion");
+                return View("Edit", rutina);
+            }
+
+            var rutinaEjercicio = new RutinaEjercicio
+            {
+                RutinaId = rutinaId,
+                EjercicioId = ejercicioId
+            };
+
+            _context.RutinaEjercicios.Add(rutinaEjercicio);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Edit), new { id = rutinaId });
+        }
+
+        // POST: Rutinas/DesasignarEjercicio
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DesasignarEjercicio(int rutinaId, int ejercicioId)
+        {
+            var rutinaEjercicio = await _context.RutinaEjercicios
+                .FirstOrDefaultAsync(re => re.RutinaId == rutinaId && re.EjercicioId == ejercicioId);
+
+            if (rutinaEjercicio == null)
+            {
+                return NotFound();
+            }
+
+            _context.RutinaEjercicios.Remove(rutinaEjercicio);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Edit), new { id = rutinaId });
         }
 
         // GET: Rutinas/Delete/5

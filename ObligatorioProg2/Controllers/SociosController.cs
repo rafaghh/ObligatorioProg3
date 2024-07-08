@@ -20,10 +20,19 @@ namespace ObligatorioProg3.Controllers
         }
 
         // GET: Socios
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? tipoId)
         {
-            var applicationDbContext = _context.Socios.Include(s => s.Local).Include(s => s.TipoSocio);
-            return View(await applicationDbContext.ToListAsync());
+            var tiposSocio = await _context.TiposSocio.ToListAsync();
+            ViewData["TipoId"] = new SelectList(tiposSocio, "Id", "TipoNombre");
+
+            IQueryable<Socio> socios = _context.Socios.Include(s => s.Local).Include(s => s.TipoSocio);
+
+            if (tipoId.HasValue)
+            {
+                socios = socios.Where(s => s.TipoId == tipoId);
+            }
+
+            return View(await socios.ToListAsync());
         }
 
         // GET: Socios/Details/5
@@ -37,6 +46,10 @@ namespace ObligatorioProg3.Controllers
             var socio = await _context.Socios
                 .Include(s => s.Local)
                 .Include(s => s.TipoSocio)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Rutina)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Maquina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {
@@ -51,15 +64,15 @@ namespace ObligatorioProg3.Controllers
         {
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre");
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre");
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View();
         }
 
         // POST: Socios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Create([Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion, List<int> MaquinaId)
         {
             if (ModelState.IsValid)
             {
@@ -69,6 +82,8 @@ namespace ObligatorioProg3.Controllers
             }
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
@@ -80,22 +95,26 @@ namespace ObligatorioProg3.Controllers
                 return NotFound();
             }
 
-            var socio = await _context.Socios.FindAsync(id);
+            var socio = await _context.Socios
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Rutina)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Maquina)
+                .FirstOrDefaultAsync(s => s.Id == id);
             if (socio == null)
             {
                 return NotFound();
             }
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
-        // POST: Socios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio)
+        public async Task<IActionResult> Edit(int id, [Bind("TipoId,LocalId,Id,Nombre,Telefono,Email")] Socio socio, List<int> RutinaId, List<int> Calificacion, List<int> MaquinaId)
         {
             if (id != socio.Id)
             {
@@ -124,6 +143,8 @@ namespace ObligatorioProg3.Controllers
             }
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
+            ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
+            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
@@ -138,6 +159,8 @@ namespace ObligatorioProg3.Controllers
             var socio = await _context.Socios
                 .Include(s => s.Local)
                 .Include(s => s.TipoSocio)
+                .Include(s => s.SocioRutinas)
+                .ThenInclude(sr => sr.Rutina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {
@@ -156,6 +179,8 @@ namespace ObligatorioProg3.Controllers
             if (socio != null)
             {
                 _context.Socios.Remove(socio);
+                var socioRutinas = _context.SocioRutinas.Where(sr => sr.SocioId == id);
+                _context.SocioRutinas.RemoveRange(socioRutinas);
             }
 
             await _context.SaveChangesAsync();
@@ -165,6 +190,62 @@ namespace ObligatorioProg3.Controllers
         private bool SocioExists(int id)
         {
             return _context.Socios.Any(e => e.Id == id);
+        }
+
+        // POST: Socios/DesasignarRutina
+        [HttpPost]
+        public async Task<IActionResult> DesasignarRutina(int socioId, int rutinaId)
+        {
+            var socioRutina = await _context.SocioRutinas
+                .FirstOrDefaultAsync(sr => sr.SocioId == socioId && sr.RutinaId == rutinaId);
+
+            if (socioRutina != null)
+            {
+                _context.SocioRutinas.Remove(socioRutina);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Edit), new { id = socioId });
+        }
+
+        // POST: Socios/AsignarRutina
+        [HttpPost]
+        public async Task<IActionResult> AsignarRutina(int socioId, int rutinaId, int calificacion, int maquinaId)
+        {
+            var socio = await _context.Socios.FindAsync(socioId);
+            var maquina = await _context.Maquinas.FindAsync(maquinaId);
+
+            if (maquina == null || socio == null)
+            {
+                return NotFound();
+            }
+
+            // Validación 1: Verificar si el local del socio y el local de la máquina son iguales
+            if (socio.LocalId != maquina.LocalId)
+            {
+                TempData["ErrorMessage"] = "El local del socio y el local de la máquina deben ser el mismo.";
+                return RedirectToAction(nameof(Edit), new { id = socioId });
+            }
+
+            // Validación 2: Verificar si la máquina está disponible
+            if (!maquina.Disponible)
+            {
+                TempData["ErrorMessage"] = "La máquina no está disponible.";
+                return RedirectToAction(nameof(Edit), new { id = socioId });
+            }
+
+            var socioRutina = new SocioRutina
+            {
+                SocioId = socioId,
+                RutinaId = rutinaId,
+                Calificacion = calificacion,
+                MaquinaId = maquinaId
+            };
+
+            _context.SocioRutinas.Add(socioRutina);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Edit), new { id = socioId });
         }
     }
 }
