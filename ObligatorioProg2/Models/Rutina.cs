@@ -8,8 +8,10 @@ namespace ObligatorioProg3.Models
         [Key]
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "La descripción es requerida")]
+        [MaxLength(200, ErrorMessage = "La descripción no puede exceder los 200 caracteres")]
+        [Display(Name = "Descripción", Prompt = "Ingrese una breve descripción")]
         public string Descripcion { get; set; }
-
 
         [Display(Name = "Rutina")]
         [ForeignKey("TiposRutina")]
