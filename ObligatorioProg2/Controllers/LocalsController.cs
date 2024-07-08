@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ObligatorioProg3.Datos;
 using ObligatorioProg3.Models;
@@ -24,8 +25,8 @@ namespace ObligatorioProg3.Controllers
         public async Task<IActionResult> Index(int? localId)
         {
             var locales = await _context.Locales
-                .Include(l => l.Ciudad) 
-                .Include(l => l.Responsable) 
+                .Include(l => l.Ciudad)
+                .Include(l => l.Responsable)
                 .ToListAsync();
 
             ViewData["LocalId"] = new SelectList(locales, "Id", "Nombre");
@@ -232,14 +233,27 @@ namespace ObligatorioProg3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var local = await _context.Locales.FindAsync(id);
-            if (local != null)
+            var local = await _context.Locales
+                .Include(l => l.Ciudad)
+                .Include(l => l.Responsable)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (local == null)
             {
-                _context.Locales.Remove(local);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.Locales.Remove(local);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                TempData["ErrorMessage"] = "No es posible eliminar este local porque está siendo utilizado.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
         }
 
         private bool LocalExists(int id)

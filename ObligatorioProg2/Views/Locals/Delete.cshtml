@@ -6,6 +6,13 @@
 
 <h1>Eliminar Local</h1>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <h3>Estás seguro que quieres eliminar este local?</h3>
 <div>
     <hr />
