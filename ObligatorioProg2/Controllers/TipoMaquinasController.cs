@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ObligatorioProg3.Datos;
 using ObligatorioProg3.Models;
@@ -140,13 +141,22 @@ namespace ObligatorioProg3.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var tipoMaquina = await _context.TiposMaquina.FindAsync(id);
-            if (tipoMaquina != null)
+            if (tipoMaquina == null)
             {
-                _context.TiposMaquina.Remove(tipoMaquina);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.TiposMaquina.Remove(tipoMaquina);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlEx && sqlEx.Number == 547)
+            {
+                TempData["ErrorMessage"] = "No es posible eliminar este tipo de máquina porque está siendo utilizado por otra entidad.";
+                return RedirectToAction(nameof(Delete), new { id });
+            }
         }
 
         private bool TipoMaquinaExists(int id)
