@@ -13,10 +13,6 @@ namespace ObligatorioProg3.Models
         public int RutinaId { get; set; }
         public Rutina Rutina { get; set; }
 
-        [ForeignKey("Maquina")]
-        public int MaquinaId { get; set; }
-        public Maquina? Maquina { get; set; }
-
         public int Calificacion { get; set; }
     }
 }

@@ -32,8 +32,8 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MaquinaNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MaquinaNombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,7 +46,7 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,8 +59,8 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TipoNombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Beneficios = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    TipoNombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Beneficios = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,9 +73,9 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CiudadId = table.Column<int>(type: "int", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ResponsableId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -96,7 +96,7 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     TipoMaquinaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -115,7 +115,7 @@ namespace ObligatorioProg3.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     TipoRutinaId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -163,9 +163,9 @@ namespace ObligatorioProg3.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LocalId = table.Column<int>(type: "int", nullable: true),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,9 +186,9 @@ namespace ObligatorioProg3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TipoId = table.Column<int>(type: "int", nullable: false),
                     LocalId = table.Column<int>(type: "int", nullable: false),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Nombre = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,18 +237,11 @@ namespace ObligatorioProg3.Migrations
                 {
                     SocioId = table.Column<int>(type: "int", nullable: false),
                     RutinaId = table.Column<int>(type: "int", nullable: false),
-                    MaquinaId = table.Column<int>(type: "int", nullable: false),
                     Calificacion = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SocioRutinas", x => new { x.SocioId, x.RutinaId });
-                    table.ForeignKey(
-                        name: "FK_SocioRutinas_Maquinas_MaquinaId",
-                        column: x => x.MaquinaId,
-                        principalTable: "Maquinas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SocioRutinas_Rutinas_RutinaId",
                         column: x => x.RutinaId,
@@ -365,11 +358,11 @@ namespace ObligatorioProg3.Migrations
 
             migrationBuilder.InsertData(
                 table: "SocioRutinas",
-                columns: new[] { "RutinaId", "SocioId", "Calificacion", "MaquinaId" },
+                columns: new[] { "RutinaId", "SocioId", "Calificacion" },
                 values: new object[,]
                 {
-                    { 1, 1, 5, 1 },
-                    { 2, 2, 4, 2 }
+                    { 1, 1, 5 },
+                    { 2, 2, 4 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -410,11 +403,6 @@ namespace ObligatorioProg3.Migrations
                 column: "TipoRutinaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SocioRutinas_MaquinaId",
-                table: "SocioRutinas",
-                column: "MaquinaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SocioRutinas_RutinaId",
                 table: "SocioRutinas",
                 column: "RutinaId");
@@ -434,6 +422,9 @@ namespace ObligatorioProg3.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Maquinas");
+
+            migrationBuilder.DropTable(
                 name: "Responsables");
 
             migrationBuilder.DropTable(
@@ -444,9 +435,6 @@ namespace ObligatorioProg3.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ejercicios");
-
-            migrationBuilder.DropTable(
-                name: "Maquinas");
 
             migrationBuilder.DropTable(
                 name: "Rutinas");

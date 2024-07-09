@@ -42,6 +42,19 @@
         </dd>
     </dl>
 </div>
+
+<div>
+    <h4>Rutinas Asignadas</h4>
+    <hr />
+    <ul>
+        @foreach (var rutinaSocio in Model.SocioRutinas)
+        {
+            <li><b>Rutina: </b>@rutinaSocio.Rutina.Descripcion - <b>Calificación Otorgada: </b> @rutinaSocio.Calificacion</li>
+           
+        }
+    </ul>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

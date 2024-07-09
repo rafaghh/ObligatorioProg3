@@ -130,8 +130,8 @@ namespace ObligatorioProg3.Datos
             );
 
             modelBuilder.Entity<SocioRutina>().HasData(
-                new SocioRutina { SocioId = 1, RutinaId = 1, MaquinaId = 1, Calificacion = 5 },
-                new SocioRutina { SocioId = 2, RutinaId = 2, MaquinaId = 2, Calificacion = 4 }
+                new SocioRutina { SocioId = 1, RutinaId = 1, Calificacion = 5 },
+                new SocioRutina { SocioId = 2, RutinaId = 2, Calificacion = 4 }
             );
 
             modelBuilder.Entity<RutinaEjercicio>().HasData(
