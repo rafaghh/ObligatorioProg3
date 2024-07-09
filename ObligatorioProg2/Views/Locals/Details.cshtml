@@ -60,7 +60,7 @@
     <ul>
         @foreach (var localMaquina in Model.Maquinas)
         {
-            <li><b>Número de Maquina: </b>@localMaquina.Id - <b>Tipo de Maquina: </b>@localMaquina.TipoMaquinaId</li>
+            <li><b>Número de Maquina: </b>@localMaquina.Id - <b>Tipo de Maquina: </b>@localMaquina.TipoMaquina.MaquinaNombre</li>
 
         }
     </ul>
