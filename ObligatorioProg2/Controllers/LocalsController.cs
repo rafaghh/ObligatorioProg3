@@ -67,6 +67,7 @@ namespace ObligatorioProg3.Controllers
                 .Include(l => l.Responsable)
                 .Include(l => l.Socios)
                 .Include(l => l.Maquinas)
+                .ThenInclude(tm => tm.TipoMaquina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (local == null)
             {
