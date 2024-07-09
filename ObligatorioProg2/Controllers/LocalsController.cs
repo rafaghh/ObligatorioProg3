@@ -27,6 +27,7 @@ namespace ObligatorioProg3.Controllers
             var locales = await _context.Locales
                 .Include(l => l.Ciudad)
                 .Include(l => l.Responsable)
+                .Include(l => l.Maquinas)
                 .ToListAsync();
 
             ViewData["LocalId"] = new SelectList(locales, "Id", "Nombre");
@@ -64,6 +65,8 @@ namespace ObligatorioProg3.Controllers
             var local = await _context.Locales
                 .Include(l => l.Ciudad)
                 .Include(l => l.Responsable)
+                .Include(l => l.Socios)
+                .Include(l => l.Maquinas)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (local == null)
             {

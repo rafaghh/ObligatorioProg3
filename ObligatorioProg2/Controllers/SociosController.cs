@@ -49,7 +49,6 @@ namespace ObligatorioProg3.Controllers
                 .Include(s => s.SocioRutinas)
                 .ThenInclude(sr => sr.Rutina)
                 .Include(s => s.SocioRutinas)
-                .ThenInclude(sr => sr.Maquina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (socio == null)
             {
@@ -65,7 +64,6 @@ namespace ObligatorioProg3.Controllers
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre");
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre");
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
-            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View();
         }
 
@@ -83,7 +81,6 @@ namespace ObligatorioProg3.Controllers
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
-            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
@@ -98,8 +95,6 @@ namespace ObligatorioProg3.Controllers
             var socio = await _context.Socios
                 .Include(s => s.SocioRutinas)
                 .ThenInclude(sr => sr.Rutina)
-                .Include(s => s.SocioRutinas)
-                .ThenInclude(sr => sr.Maquina)
                 .FirstOrDefaultAsync(s => s.Id == id);
             if (socio == null)
             {
@@ -108,7 +103,6 @@ namespace ObligatorioProg3.Controllers
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
-            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
@@ -144,7 +138,6 @@ namespace ObligatorioProg3.Controllers
             ViewData["LocalId"] = new SelectList(_context.Locales, "Id", "Nombre", socio.LocalId);
             ViewData["TipoId"] = new SelectList(_context.TiposSocio, "Id", "TipoNombre", socio.TipoId);
             ViewData["RutinaId"] = new SelectList(_context.Rutinas, "Id", "Descripcion");
-            ViewData["MaquinaId"] = new SelectList(_context.Maquinas, "Id", "Id");
             return View(socio);
         }
 
@@ -213,24 +206,15 @@ namespace ObligatorioProg3.Controllers
         public async Task<IActionResult> AsignarRutina(int socioId, int rutinaId, int calificacion, int maquinaId)
         {
             var socio = await _context.Socios.FindAsync(socioId);
-            var maquina = await _context.Maquinas.FindAsync(maquinaId);
 
-            if (maquina == null || socio == null)
-            {
-                return NotFound();
-            }
+            // Comprobar si la rutina ya está asignada al socio
+            var existingSocioRutina = await _context.SocioRutinas
+                .FirstOrDefaultAsync(sr => sr.SocioId == socioId && sr.RutinaId == rutinaId);
 
-            // Validación 1: Verificar si el local del socio y el local de la máquina son iguales
-            if (socio.LocalId != maquina.LocalId)
+            if (existingSocioRutina != null)
             {
-                TempData["ErrorMessage"] = "El local del socio y el local de la máquina deben ser el mismo.";
-                return RedirectToAction(nameof(Edit), new { id = socioId });
-            }
-
-            // Validación 2: Verificar si la máquina está disponible
-            if (!maquina.Disponible)
-            {
-                TempData["ErrorMessage"] = "La máquina no está disponible.";
+                // La rutina ya está asignada
+                TempData["ErrorMessage"] = "La rutina ya está asignada a este socio.";
                 return RedirectToAction(nameof(Edit), new { id = socioId });
             }
 
@@ -239,7 +223,6 @@ namespace ObligatorioProg3.Controllers
                 SocioId = socioId,
                 RutinaId = rutinaId,
                 Calificacion = calificacion,
-                MaquinaId = maquinaId
             };
 
             _context.SocioRutinas.Add(socioRutina);

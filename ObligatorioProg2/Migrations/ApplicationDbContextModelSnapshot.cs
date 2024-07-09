@@ -61,7 +61,8 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("TipoMaquinaId")
                         .HasColumnType("int");
@@ -100,11 +101,13 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Direccion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("ResponsableId")
                         .HasColumnType("int");
@@ -207,18 +210,21 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int?>("LocalId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
 
@@ -257,7 +263,8 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int?>("TipoRutinaId")
                         .HasColumnType("int");
@@ -320,18 +327,21 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("LocalId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("TipoId")
                         .HasColumnType("int");
@@ -376,12 +386,7 @@ namespace ObligatorioProg3.Migrations
                     b.Property<int>("Calificacion")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaquinaId")
-                        .HasColumnType("int");
-
                     b.HasKey("SocioId", "RutinaId");
-
-                    b.HasIndex("MaquinaId");
 
                     b.HasIndex("RutinaId");
 
@@ -392,15 +397,13 @@ namespace ObligatorioProg3.Migrations
                         {
                             SocioId = 1,
                             RutinaId = 1,
-                            Calificacion = 5,
-                            MaquinaId = 1
+                            Calificacion = 5
                         },
                         new
                         {
                             SocioId = 2,
                             RutinaId = 2,
-                            Calificacion = 4,
-                            MaquinaId = 2
+                            Calificacion = 4
                         });
                 });
 
@@ -414,11 +417,13 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("MaquinaNombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -449,7 +454,8 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -483,11 +489,13 @@ namespace ObligatorioProg3.Migrations
 
                     b.Property<string>("Beneficios")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("TipoNombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -602,12 +610,6 @@ namespace ObligatorioProg3.Migrations
 
             modelBuilder.Entity("ObligatorioProg3.Models.SocioRutina", b =>
                 {
-                    b.HasOne("ObligatorioProg3.Models.Maquina", "Maquina")
-                        .WithMany()
-                        .HasForeignKey("MaquinaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ObligatorioProg3.Models.Rutina", "Rutina")
                         .WithMany("SocioRutinas")
                         .HasForeignKey("RutinaId")
@@ -619,8 +621,6 @@ namespace ObligatorioProg3.Migrations
                         .HasForeignKey("SocioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Maquina");
 
                     b.Navigation("Rutina");
 
